@@ -20,7 +20,7 @@ export default function NotePanel() {
                 variant="h6" 
                 fontWeight={"bold"}
                 >
-                    โน้ต
+                    โน้ต hhhh
                 </Typography>
             </Box>
 
