@@ -1,7 +1,7 @@
 import React from "react";
 import { AppBar , Toolbar , Typography } from '@mui/material'
 
-export default function NavBar() {
+export default function Header() {
     return (
         <AppBar 
         position="static"
@@ -20,7 +20,7 @@ export default function NavBar() {
                 fontWeight={"bold"}
                 color="white"
                 >
-                    LarnGaer LM
+                    LarnGearLM
                 </Typography>
             </Toolbar>
         </AppBar>

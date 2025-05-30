@@ -3,7 +3,7 @@ import { Box, CssBaseline } from '@mui/material';
 import ChatPanel from '@/components/ChatPanel';
 import DocumentPanel from '@/components/DocumentPanel';
 import NotePanel from '@/components/NotePanel';
-import NavBar from '@/components/NavBar';
+import Header from '@/components/Header';
 
 export default function HomePage() {
   return (
@@ -15,7 +15,7 @@ export default function HomePage() {
       flexDirection="column" 
       height="100vh"
       >
-        <NavBar />
+        <Header />
 
         <Box 
         display="flex" 
