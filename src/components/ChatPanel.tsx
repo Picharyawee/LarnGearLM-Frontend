@@ -51,7 +51,8 @@ export default function ChatPanel() {
                     borderRadius: '8px',
                     '&:hover':{
                         backgroundColor:'#1a202c'
-                    }
+                    },
+                    px: 4
                 }}
                 >
                     อัปโหลดแหล่งข้อมูล
