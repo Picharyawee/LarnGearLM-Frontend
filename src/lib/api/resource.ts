@@ -1,7 +1,9 @@
 import api from './axios';
 
 export async function uploadResource(formData: FormData) {
-  return api.post('/upload-resource', formData);
+  return api.post('/upload-resource', formData, {headers: {
+    'Content-Type': 'multipart/form-data',
+  }});
 }
 
 export async function getResources() {
