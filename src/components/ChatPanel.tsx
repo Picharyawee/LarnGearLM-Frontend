@@ -5,8 +5,9 @@ export default function ChatPanel() {
     return (
         <Box
         display="flex"
+        width="50%"
         flexDirection="column"
-        height="calc(100vh - 100px)"
+        m={2}
         border={1}
         borderRadius={2}
         >

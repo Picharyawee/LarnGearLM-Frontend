@@ -4,9 +4,9 @@ import { Box , Button , Typography } from '@mui/material';
 export default function DocumentPanel() {
     return (
         <Box
-        display={"flex"}
-        flexDirection={"column"}
-        height="calc(100vh - 100px)"
+        display="flex"
+        width="25%"
+        flexDirection="column"
         m={2}
         border={1}
         borderRadius={2}
