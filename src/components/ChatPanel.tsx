@@ -1,8 +1,31 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Box, TextField, Button, Typography, IconButton } from "@mui/material";
 import Image from "next/image";
 
 export default function ChatPanel() {
+  const [currentMessage, setCurrentMessage] = useState("");
+  const[messages, setMessages] = useState([]);
+
+  const handleMessageChange = (event) => {
+    setCurrentMessage(event.target.value);
+  };
+
+  const handleSendMessage = () => {
+    if(currentMessage.trim() !== ""){
+      setMessages((prevMessages) => [...prevMessages, {id: Date.now(), sender: "You", text: currentMessage.trim()}]);
+      setCurrentMessage("");
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if(event.key === "Enter" && !event.shiftKey){
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -21,7 +44,16 @@ export default function ChatPanel() {
       >
         แชท
       </Typography>
-
+      
+      <Box
+      display={'flex'}
+      flexDirection={'column'}
+      flexGrow={1}
+      px={4}
+      py={2}
+      overflowY={'auto'}
+      >
+      {messages.length === 0 ? (
       <Box
         display={"flex"}
         flexDirection={"column"}
@@ -57,6 +89,34 @@ export default function ChatPanel() {
         </Button>
       </Box>
 
+      ) : (
+        messages.map((msg) => (
+          <Box
+          key={msg.id}
+          sx={{
+            alignSelf: msg.sender === "You" ? "flex-end" : "flex-start",
+            backgroundColor: msg.sender === "You" ? "#2d3748" : "#f0f0f0",
+            borderRadius: '24px',
+            py: 1.5,
+            px: 2,
+            mb: 1,
+            maxWidth: '70%',
+            wordBreak: 'break-word'
+          }}
+          >
+            {/* <Typography variant="body2" fontWeight="bold" color="white"
+            >
+              {msg.sender}:
+            </Typography> */}
+
+            <Typography variant="body1" color="white">
+              {msg.text}
+            </Typography>
+          </Box>
+        ))
+      )}
+      </Box>
+
       <Box p={2}>
         <Box
           display="flex"
@@ -70,6 +130,9 @@ export default function ChatPanel() {
             size="small"
             placeholder="เริ่มพิมพ์..."
             variant="outlined"
+            value={currentMessage}
+            onChange={handleMessageChange}
+            onKeyPress={handleKeyPress}
             sx={{
               '&.MuiOutlinedInput-root': {
                 borderRadius: 4
@@ -78,6 +141,7 @@ export default function ChatPanel() {
           />
 
           <IconButton
+            onClick={handleSendMessage}
             sx={{
               display: "flex",
               alignItems: "center",
