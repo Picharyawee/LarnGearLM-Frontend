@@ -55,16 +55,12 @@ export default function NotePanel() {
 
     return (
         <Box
-        display={"flex"}
-        flexDirection={"column"}
+        display="flex"
+        flexDirection="column"
         height='calc(100vh - 100px)'
-        //justifyContent={"flex-start"}
-        //flexGrow={1}
         border={1}
         borderRadius={2}
         m={2}
-        // minHeight={0}
-        // height="100%"
         >
             <Box
             borderBottom={1}
@@ -91,202 +87,177 @@ export default function NotePanel() {
                 )}
             </Box>
 
-            <Box
-            px={2}
-            display={'flex'}
-            flexDirection={'column'}
-            flexGrow={1}
-            >
-                {(isAddingNote || selectedNote) ? (
+            {(isAddingNote || selectedNote) ? (
+                <Box
+                flexGrow={1}
+                display={'flex'}
+                flexDirection={'column'}
+                px={2}
+                >
                     <Box
-                    width={'100%'}
-                    flexGrow={1}
                     display={'flex'}
-                    flexDirection={'column'}
-                    // mx={'auto'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    textAlign={'center'}
+                    p={2}
+                    borderBottom={1}
+                    mt={-2}
+                    mx={-2}
                     >
-                        <Box
-                        display={'flex'}
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
-                        textAlign={'center'}
-                        p={2}
-                        borderBottom={1}
-                        mt={-2}
-                        mx={-2}
-                        >
-                            <Typography>
-                                {selectedNote ? "แก้ไขโน้ต" : "โน้ตใหม่"}
-                            </Typography>
+                        <Typography>
+                            {selectedNote ? "แก้ไขโน้ต" : "โน้ตใหม่"}
+                        </Typography>
 
-                            {selectedNote && (
-                                <IconButton 
-                                sx={{ width: '24px' , height: '24px' }} 
-                                onClick={() => handleDeleteNoteByID(selectedNote.id)}
-                                >
-                                    <DeleteIcon/>
-                                </IconButton>
-                            )}
-                        </Box>
-                    
-                        <Box
-                        px={2}
-                        display={'flex'}
-                        flexDirection={'column'}
-                        flexGrow={1}
-                        //my={'auto'}
-                        >
-                            <TextField
-                            fullWidth
-                            multiline
-                            //rows={5}
-                            placeholder="เริ่มพิมพ์..."
-                            value={newNoteContent}
-                            variant="outlined"
-                            sx={{
-                                flexGrow: 1, // ทำให้ TextField ขยายเต็มพื้นที่
-                                '& .MuiOutlinedInput-root': {
-                                    height: '100%', // ทำให้ TextField สูงเต็ม Box
-                                    alignItems: 'flex-start', // จัดข้อความให้อยู่ด้านบน
-                                    '& fieldset': { border: 'none' },
-                                    '&:hover fieldset': { border: 'none' },
-                                    '&.Mui-focused fieldset': { border: 'none' },
-                                }
-                            }}
-                            onChange={(e) => setNewNoteContent(e.target.value)}
-                            />
-
-                            <Box
-                            display={'flex'}
-                            gap={1}
-                            mb={1}
-                            mt={2}
+                        {selectedNote && (
+                            <IconButton 
+                            sx={{ 
+                                width: '24px', 
+                                height: '24px' 
+                            }} 
+                            onClick={() => handleDeleteNoteByID(selectedNote.id)}
                             >
-                            <Button
-                            variant="contained"
-                            onClick={selectedNote ? handleSaveEditNote : handleAddNote}
-                            sx={{
-                                backgroundColor: '#2d3748',
-                                borderRadius: '8px',
-                                '&:hover': { backgroundColor: '#1a202c' },
-                                py: 1.5,
-                                width: '50%'
-                            }}
-                            >
-                                <Typography sx={{ color: 'white' }}>
-                                    {selectedNote ? "บันทึกการแก้ไข" : "บันทึกโน้ต"}
-                                </Typography>
-                            </Button>
-
-                            <Button
-                            variant="outlined"
-                            onClick={handleCancelAction}
-                            sx={{
-                                borderRadius: '8px',
-                                py: 1.5,
-                                borderColor: '#d3d3d3',
-                                color: '#2d3748',
-                                '&:hover': {
-                                    borderColor: '#1a202c',
-                                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                                },
-                                flexGrow: 1
-                            }}
-                            >
-                                <Typography>
-                                    ยกเลิก
-                                </Typography>
-                            </Button>
-                            </Box>
-
-                            <Button
-                            fullWidth
-                            variant="contained"
-                            sx={{
-                                backgroundColor: '#2d3748',
-                                borderRadius: '8px',
-                                '&:hover': { backgroundColor: '#1a202c' },
-                                justifyContent: 'center',
-                                gap: 1,
-                                py: 1.5,
-                                mx: 'auto',
-                                mb: 2
-                            }}
-
-                            onClick={selectedNote ? handleSaveEditNote : handleAddNote}
-
-                            startIcon={
-                                <img
-                                src='/img/Plus.svg'
-                                alt='Plus Icon'
-                                width={24}
-                                height={24}
-                                />
-                            }
-                            >
-                                <Typography sx={{ color: 'white' }}>
-                                    แปลงโน้ตเป็นแหล่งข้อมูล
-                                </Typography>
-                            </Button>
-                        </Box>
+                                <DeleteIcon/>
+                            </IconButton>
+                        )}
                     </Box>
-                ) : (
-                    <Box px={2}>
+                
+                    <TextField
+                    fullWidth
+                    multiline
+                    placeholder="เริ่มพิมพ์..."
+                    value={newNoteContent}
+                    variant="outlined"
+                    sx={{
+                        flexGrow: 1, // ทำให้ TextField ขยายเต็มพื้นที่
+                        '& .MuiOutlinedInput-root': {
+                            height: '100%', // ทำให้ TextField สูงเต็ม Box
+                            alignItems: 'flex-start', // จัดข้อความให้อยู่ด้านบน
+                            '& fieldset': { border: 'none' },
+                            '&:hover fieldset': { border: 'none' },
+                            '&.Mui-focused fieldset': { border: 'none' },
+                        }
+                    }}
+                    onChange={(e) => setNewNoteContent(e.target.value)}
+                    />
+
+                    <Box
+                    display={'flex'}
+                    gap={1}
+                    mb={1}
+                    mt={2}
+                    >
                         <Button
-                        fullWidth
                         variant="contained"
+                        onClick={selectedNote ? handleSaveEditNote : handleAddNote}
                         sx={{
                             backgroundColor: '#2d3748',
                             borderRadius: '8px',
                             '&:hover': { backgroundColor: '#1a202c' },
-                            justifyContent: 'center',
-                            gap: 1,
-                            py: 1.5
+                            py: 1.5,
+                            width: '50%'
                         }}
-
-                        onClick={() => setIsAddingNote(true)}
-
-                        startIcon={
-                            <img
-                            src='/img/Plus.svg'
-                            alt='Plus Icon'
-                            width={24}
-                            height={24}
-                            />
-                        }
                         >
                             <Typography sx={{ color: 'white' }}>
-                                เพิ่มโน้ต
+                                {selectedNote ? "บันทึกการแก้ไข" : "บันทึกโน้ต"}
+                            </Typography>
+                        </Button>
+
+                        <Button
+                        variant="outlined"
+                        onClick={handleCancelAction}
+                        sx={{
+                            borderRadius: '8px',
+                            py: 1.5,
+                            borderColor: '#d3d3d3',
+                            color: '#2d3748',
+                            '&:hover': {
+                                borderColor: '#1a202c',
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            },
+                            flexGrow: 1
+                        }}
+                        >
+                            <Typography>
+                                ยกเลิก
                             </Typography>
                         </Button>
                     </Box>
-                )}
-            </Box>
 
-            {!isAddingNote && (
-                <Box
-                display={"flex"}
-                flexDirection={"column"}
+                    <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                        backgroundColor: '#2d3748',
+                        borderRadius: '8px',
+                        '&:hover': { backgroundColor: '#1a202c' },
+                        justifyContent: 'center',
+                        gap: 1,
+                        py: 1.5,
+                        mx: 'auto',
+                        mb: 2
+                    }}
+
+                    onClick={selectedNote ? handleSaveEditNote : handleAddNote}
+
+                    startIcon={
+                        <img
+                        src='/img/Plus.svg'
+                        alt='Plus Icon'
+                        width={24}
+                        height={24}
+                        />
+                    }
+                    >
+                        <Typography sx={{ color: 'white' }}>
+                            แปลงโน้ตเป็นแหล่งข้อมูล
+                        </Typography>
+                    </Button>
+                </Box>
+            ) : (
+                <Box 
+                px={2}
                 flexGrow={1}
-                alignItems={"flex-start"}
-                justifyContent={"flex-start"}
-                textAlign={"center"}
-                //mx={"auto"}
-                gap={2}
-                px={4}
-                width={'100%'}
-                color={"text.secondary"}
-                overflow={'auto'}
-                minHeight={0}
+                display='flex'
+                flexDirection='column'
                 >
+                    <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                        backgroundColor: '#2d3748',
+                        borderRadius: '8px',
+                        '&:hover': { backgroundColor: '#1a202c' },
+                        justifyContent: 'center',
+                        gap: 1,
+                        py: 1.5,
+                        mb: 2
+                    }}
+
+                    onClick={() => setIsAddingNote(true)}
+
+                    startIcon={
+                        <img
+                        src='/img/Plus.svg'
+                        alt='Plus Icon'
+                        width={24}
+                        height={24}
+                        />
+                    }
+                    >
+                        <Typography sx={{ color: 'white' }}>
+                            เพิ่มโน้ต
+                        </Typography>
+                    </Button>
+
                     {notes.length === 0 ? (
                         <Box
-                        display={'flex'}
-                        flexDirection={'column'}
-                        alignItems={"center"}
-                        // justifyContent={"center"}
-                        // textAlign={"center"}
-                        //flexGrow={1}
+                        display='flex'
+                        flexDirection='column'
+                        alignItems='center'
+                        flexGrow={1}
+                        justifyContent='center'
+                        textAlign='center'
+                        color='text.secondary'
                         >
                             <img
                             src='/img/NoteBook.svg'
@@ -302,37 +273,41 @@ export default function NotePanel() {
                         </Box>
                     ) : (
                         <Box
-                        display={'flex'}
-                        flexDirection={'column'}
-                        justifyContent={'flex-start'}
-                        alignContent={'flex-start'}
-                        //alignItems={'flex-start'}
-                        gap={2}
-                        sx={{
-                            width: '100%',
-                            //mx: 'auto'
-                            
-                        }}
-                        
+                        display='flex'
+                        flexDirection='column'
+                        //gap={1}
+                        overflow='auto'
+                        flexGrow={1}
                         >
                             {notes.map((note) => (
-                                <Paper 
+                                <Box 
                                 key={note.id}
-                                elevation={1}
+                                // elevation={1}
                                 sx={{
-                                    p: 2,
-                                    cursor: 'pointer'
+                                    px: 2,
+                                    py: 1.5,
+                                    cursor: 'pointer',
+                                    border: 1,
+                                    display: 'flex',
+                                    gap: 1,
+                                    borderRadius: '4px',
+                                    //color: '#2d3748'
                                 }}
                                 onClick={() => handleViewNote(note)}
                                 >
+                                    <img
+                                    src='/img/NoteBook.svg'
+                                    alt='Notebook Icon'
+                                    width={24}
+                                    height={24}
+                                    />
+
                                     <Typography>
                                         {note.content.length > 10
                                         ? note.content.substring(0, 10) + '...'
                                         : note.content}
                                     </Typography>
-
-
-                                </Paper>
+                                </Box>
                             ))}
                         </Box>
                     )}
