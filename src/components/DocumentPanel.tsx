@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Box , Button , Typography , IconButton , Checkbox , Dialog , DialogTitle , DialogContent , DialogActions , TextField } from '@mui/material';
+import Image from "next/image";
 
 export default function DocumentPanel() {
     const [open , setOpen] = useState(false);
@@ -67,57 +68,50 @@ export default function DocumentPanel() {
 
     return (
         <Box
-        display={"flex"}
-        flexDirection={"column"}
-        height="calc(100vh - 100px)"
+        display="flex"
+        width="25%"
+        flexDirection="column"
         m={2}
         border={1}
         borderRadius={2}
         >
-            <Box
+            <Typography
+            variant="h6"
+            fontWeight={"bold"}
             borderBottom={1}
-            mb={1}
             p={2}
+            mb={1}
             >
-                <Typography
-                variant="h6"
-                fontWeight={"bold"}
-                >
-                    แหล่งข้อมูล
+                แหล่งข้อมูล
+            </Typography>
+
+            <Button
+            variant="contained"
+            onClick={handleClickOpen}
+            sx={{
+                backgroundColor: '#2d3748',
+                borderRadius: '8px',
+                gap:1,
+                my:1,
+                py:1.5,
+                mx: 2,
+                '&:hover':{
+                    backgroundColor:'#1a202c'
+                },
+            }}
+            startIcon={
+                <Image
+                src='/img/Plus.svg'
+                alt='Plus Icon'
+                width={24}
+                height={24}
+                />
+            }
+            >
+                <Typography>
+                    เพิ่มแหล่งข้อมูล
                 </Typography>
-            </Box>
-
-            <Box px={2}>
-                <Button
-                variant="contained"
-                fullWidth
-                onClick={handleClickOpen}
-                sx={{
-                    backgroundColor: '#2d3748',
-                    borderRadius: '8px',
-                    '&:hover':{
-                        backgroundColor:'#1a202c'
-                    },
-                    gap:1,
-                    mt:1,
-                    py:1.5,
-                }}
-
-                startIcon={
-                    <img 
-                    src="/img/Plus.svg"
-                    alt="Plus Icon"
-                    width={24}
-                    height={24}
-                    />
-                }
-                >
-                    <Typography sx={{color:'white'}}>
-                        เพิ่มแหล่งข้อมูล
-                    </Typography>
-                </Button>
-            </Box>
-
+            </Button>
             {/* List of resource */}
             {uploadedFiles.length !== 0 && (
                 <Box
@@ -286,7 +280,7 @@ export default function DocumentPanel() {
                     />
 
                     <Typography>
-                        แหล่งข้อมูลที่บันทึกไว้จะปรากฏที่นี่ คลิก "เพิ่มแหล่งข้อมูล" ด้านบนเพื่อเพิ่มไฟล์ PDF
+                        แหล่งข้อมูลที่บันทึกไว้จะปรากฏที่นี่ คลิก &quot;เพิ่มแหล่งข้อมูล&quot; ด้านบนเพื่อเพิ่มไฟล์ PDF
                     </Typography>
                 </Box>
             )}

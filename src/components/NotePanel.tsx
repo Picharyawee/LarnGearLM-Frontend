@@ -4,9 +4,9 @@ import { Box , Button , Stack, Typography } from '@mui/material';
 export default function NotePanel() {
     return (
         <Box
-        display={"flex"}
-        flexDirection={"column"}
-        height='calc(100vh - 100px)'
+        display="flex"
+        width="25%"
+        flexDirection="column"
         border={1}
         borderRadius={2}
         m={2}
