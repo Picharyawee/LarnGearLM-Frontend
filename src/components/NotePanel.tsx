@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box , Button , Typography , IconButton , TextField , Stack , Paper } from '@mui/material';
+import { Box , Button , Typography , IconButton , TextField , Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -9,17 +9,48 @@ export default function NotePanel() {
     const [notes, setNotes] = useState([]); //เก็บโน้ต
     const [newNoteContent , setNewNoteContent] = useState(""); //ข้อความใหม่
     const [isAddingNote, setIsAddingNote] = useState(false); //การแสดง textfield
+    const [selectedNote, setSelectedNote] = useState(null); //โน้ตที่ถูกเลือก
 
     const handleAddNote = () => {
         if(newNoteContent.trim() !== "") {
             setNotes([...notes, {id: Date.now(), content: newNoteContent.trim()}])
             setNewNoteContent("");
             setIsAddingNote(false);
+            setSelectedNote(null);
         }
     };
 
-    const handleDeleteNote = (idToDelete) => {
+    const handleDeleteNoteByID = (idToDelete) => {
         setNotes(notes.filter(note => note.id !== idToDelete));
+        setSelectedNote(null);
+        setIsAddingNote(false);
+        setNewNoteContent("");
+    };
+
+    const handleViewNote = (note) => {
+        setSelectedNote(note);
+        setNewNoteContent(note.content);
+        setIsAddingNote(true);
+    };
+
+    const handleSaveEditNote = () => {
+        if(selectedNote && newNoteContent.trim() !== ""){
+            setNotes(notes.map(note =>
+                note.id === selectedNote.id ? {...note, content: newNoteContent.trim()} : note
+            ));
+            setSelectedNote(null);
+            setNewNoteContent("");
+            setIsAddingNote(false);
+        }
+        else if(selectedNote === null && newNoteContent.trim() !== ""){
+            handleAddNote();
+        }
+    };
+
+    const handleCancelAction = () => {
+        setIsAddingNote(false);
+        setSelectedNote(null);
+        setNewNoteContent("");
     };
 
     return (
@@ -50,13 +81,10 @@ export default function NotePanel() {
                     โน้ต
                 </Typography>
 
-                {isAddingNote && (
+                {(isAddingNote || selectedNote) && (
                     <IconButton 
                     sx={{ width: '24px' , height: '24px' }}  
-                    onClick={() => {
-                        setIsAddingNote(false);
-                        setNewNoteContent("");
-                    }}
+                    onClick={handleCancelAction}
                     >
                         <ArrowBackIcon/>
                     </IconButton>
@@ -69,7 +97,7 @@ export default function NotePanel() {
             flexDirection={'column'}
             flexGrow={1}
             >
-                {isAddingNote ? (
+                {(isAddingNote || selectedNote) ? (
                     <Box
                     width={'100%'}
                     flexGrow={1}
@@ -88,18 +116,17 @@ export default function NotePanel() {
                         mx={-2}
                         >
                             <Typography>
-                                โน้ตใหม่
+                                {selectedNote ? "แก้ไขโน้ต" : "โน้ตใหม่"}
                             </Typography>
 
-                            <IconButton 
-                            sx={{ width: '24px' , height: '24px' }} 
-                            onClick={() => {
-                                setIsAddingNote(false);
-                                setNewNoteContent("");
-                            }}
-                            >
-                                <DeleteIcon/>
-                            </IconButton>
+                            {selectedNote && (
+                                <IconButton 
+                                sx={{ width: '24px' , height: '24px' }} 
+                                onClick={() => handleDeleteNoteByID(selectedNote.id)}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            )}
                         </Box>
                     
                         <Box
@@ -126,15 +153,6 @@ export default function NotePanel() {
                                     '&.Mui-focused fieldset': { border: 'none' },
                                 }
                             }}
-                            // slotProps={{
-                            //     root: {
-                            //         sx: {
-                            //             '& .MuiOutlinedInput-notchedOutline': {
-                            //                 border: 'none'
-                            //             }
-                            //         }
-                            //     }
-                            // }}
                             onChange={(e) => setNewNoteContent(e.target.value)}
                             />
 
@@ -146,7 +164,7 @@ export default function NotePanel() {
                             >
                             <Button
                             variant="contained"
-                            onClick={handleAddNote}
+                            onClick={selectedNote ? handleSaveEditNote : handleAddNote}
                             sx={{
                                 backgroundColor: '#2d3748',
                                 borderRadius: '8px',
@@ -156,16 +174,13 @@ export default function NotePanel() {
                             }}
                             >
                                 <Typography sx={{ color: 'white' }}>
-                                    บันทึกโน้ต
+                                    {selectedNote ? "บันทึกการแก้ไข" : "บันทึกโน้ต"}
                                 </Typography>
                             </Button>
 
                             <Button
                             variant="outlined"
-                            onClick={() => {
-                                setIsAddingNote(false);
-                                setNewNoteContent("");
-                            }}
+                            onClick={handleCancelAction}
                             sx={{
                                 borderRadius: '8px',
                                 py: 1.5,
@@ -198,7 +213,7 @@ export default function NotePanel() {
                                 mb: 2
                             }}
 
-                            onClick={handleAddNote}
+                            onClick={selectedNote ? handleSaveEditNote : handleAddNote}
 
                             startIcon={
                                 <img
@@ -296,7 +311,9 @@ export default function NotePanel() {
                         sx={{
                             width: '100%',
                             //mx: 'auto'
+                            
                         }}
+                        
                         >
                             {notes.map((note) => (
                                 <Paper 
@@ -304,13 +321,17 @@ export default function NotePanel() {
                                 elevation={1}
                                 sx={{
                                     p: 2,
+                                    cursor: 'pointer'
                                 }}
+                                onClick={() => handleViewNote(note)}
                                 >
                                     <Typography>
                                         {note.content.length > 10
                                         ? note.content.substring(0, 10) + '...'
                                         : note.content}
                                     </Typography>
+
+
                                 </Paper>
                             ))}
                         </Box>
