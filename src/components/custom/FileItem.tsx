@@ -1,6 +1,17 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Checkbox } from "@mui/material";
+import { FileProps } from "@/lib/types/FileProps";
 
-export default function FileItem({ file, index }: { file: File; index: number }) {
+export default function FileItem({
+  fileProps,
+  index,
+  isSelected,
+  toggleSelectFile
+}: {
+  fileProps: FileProps;
+  index: number;
+  isSelected: boolean;
+  toggleSelectFile: (index: number) => void;
+}) {
   return (
     <Box
       key={index}
@@ -14,8 +25,12 @@ export default function FileItem({ file, index }: { file: File; index: number })
       bgcolor="white"
     >
       <Typography color="#2d3748" noWrap>
-        {file.name}
+        {fileProps.filename}
       </Typography>
+      <Checkbox
+        checked={isSelected}
+        onChange={() => toggleSelectFile(index)}
+      />
     </Box>
   );
 }

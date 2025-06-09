@@ -1,24 +1,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from '@mui/material';
+import { Box, Checkbox, Typography } from '@mui/material';
 import Image from "next/image";
 import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
 import { uploadResource, getResources } from "@/lib/api/resource";
-
-interface FileProps {
-  filename: string;
-  url: string;
-  content_type: string;
-  last_modified: string;
-  size: number;
-}
+import { FileProps } from "@/lib/types/FileProps";
 
 export default function ResourcePanel() {
   const [open, setOpen] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,36 +22,48 @@ export default function ResourcePanel() {
     setOpen(false);
   }
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // turn file into FormData
       const formData = new FormData();
       formData.append('uploaded_file', file);
-      setUploadedFiles((prevFiles) => [...prevFiles, file]);
-      uploadResource(formData)
+      await uploadResource(formData)
+      await fetchResources();
       setOpen(false);
+    }
+  };  
+
+  const toggleSelectFile = (index: number) => {
+    setSelectedFiles((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedFiles.length === uploadedFiles.length) {
+      setSelectedFiles([]);
+    } else {
+      setSelectedFiles(uploadedFiles.map((_, i) => i));
+    }
+  };
+
+  const fetchResources = async () => {
+    try {
+      const response = await getResources();
+      console.log("Fetched resources:", response.data);
+      if (response.data) {
+        const files: FileProps[] = response.data.files;
+        setUploadedFiles(files);
+      }
+    } catch (error) {
+      console.error("Error fetching resources:", error);
     }
   };
 
   useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await getResources();
-        if (response.data) {
-          console.log("Fetched resources:", response.data.files);
-          const files = await Promise.all(
-            response.data.files.map(async (file: FileProps) => {
-              return new File([file.url], file.filename, { type: file.content_type });
-            })
-          );
-          setUploadedFiles(files);
-        }
-      } catch (error) {
-        console.error("Error fetching resources:", error);
-      }
-    };
-
     fetchResources();
   }, []);
 
@@ -93,20 +99,43 @@ export default function ResourcePanel() {
 
       {/* List of resource */}
       {uploadedFiles.length !== 0 ? (
-        <Box
-          display="flex"
-          flexDirection="column"
-          px={2}
-          mt={1}
-        >
-          {uploadedFiles.map((file, index) => (
-            <FileItem
-              key={index}
-              file={file}
-              index={index}
+        <>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            px={2}
+            py={1}
+            borderRadius={1}
+            bgcolor="white"
+          >
+            <Typography>
+              เลือกแหล่งข้อมูลทั้งหมด
+            </Typography>
+
+            <Checkbox
+              checked={selectedFiles.length === uploadedFiles.length && uploadedFiles.length > 0}
+              indeterminate={selectedFiles.length > 0 && selectedFiles.length < uploadedFiles.length}
+              onChange={toggleSelectAll}
             />
-          ))}
-        </Box>
+          </Box>
+          <Box
+            display="flex"
+            flexDirection="column"
+            px={2}
+            mt={1}
+          >
+            {uploadedFiles.map((file, index) => (
+              <FileItem
+                key={index}
+                fileProps={file}
+                index={index}
+                isSelected={selectedFiles.includes(index)}
+                toggleSelectFile={toggleSelectFile}
+              />
+            ))}
+          </Box>
+        </>
       ) : (
         <Box
           flexGrow={1}

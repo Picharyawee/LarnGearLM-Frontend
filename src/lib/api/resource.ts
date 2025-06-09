@@ -10,6 +10,16 @@ export async function getResources() {
   return api.get('/get-resources');
 }
 
+export async function giveInstructions({
+  instructions,
+  indexSelectedFiles = []
+}:{
+  instructions: string,
+  indexSelectedFiles: number[]
+}) {
+  return api.post('/give-instructions', { instructions, selected_files: indexSelectedFiles });
+}
+
 export async function deleteResource(filename: string) {
   return api.delete(`/delete-resource/${filename}`);
 }
