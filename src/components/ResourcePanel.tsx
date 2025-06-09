@@ -6,7 +6,15 @@ import Image from "next/image";
 import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
-import { uploadResource, getResources, getResource } from "@/lib/api/resource";
+import { uploadResource, getResources } from "@/lib/api/resource";
+
+interface FileProps {
+  filename: string;
+  url: string;
+  content_type: string;
+  last_modified: string;
+  size: number;
+}
 
 export default function ResourcePanel() {
   const [open, setOpen] = useState(false);
@@ -37,7 +45,13 @@ export default function ResourcePanel() {
       try {
         const response = await getResources();
         if (response.data) {
-          console.log("Fetched resources:", response.data);
+          console.log("Fetched resources:", response.data.files);
+          const files = await Promise.all(
+            response.data.files.map(async (file: FileProps) => {
+              return new File([file.url], file.filename, { type: file.content_type });
+            })
+          );
+          setUploadedFiles(files);
         }
       } catch (error) {
         console.error("Error fetching resources:", error);
