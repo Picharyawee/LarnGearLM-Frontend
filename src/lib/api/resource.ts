@@ -12,9 +12,12 @@ export async function getResources() {
   return api.get('/get-resources');
 }
 
-export async function giveInstructions(instruction: string, selectedFiles: string[]) {
-  return api.post('/give-instruction', null, {
-    params: { instruction, selected_files: selectedFiles },
+export async function giveInstructions(instruction: string, selected_files: string[]) {
+  return api.post('/give-instruction', selected_files, {
+    params: { instruction },
+    headers: {
+      'Content-Type': 'application/json',
+    }
   });
 }
 

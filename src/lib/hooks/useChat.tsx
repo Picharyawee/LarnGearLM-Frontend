@@ -60,7 +60,7 @@ export const useChat = (): UseChatReturn => {
     setIsLoading(true);
 
     try{
-      const response = await giveInstructions(userMessage, []);
+      const response = await giveInstructions(userMessage, []); //TODO [] with something like ["LeoTreasure.pdf", AnaCoffee.pdf"]
 
       let aiResponseText = "ไม่พบการตอบกลับจาก AI";
 
