@@ -27,7 +27,6 @@ export default function NotePanel() {
         display="flex"
         flexDirection="column"
         width="25%"
-        height='calc(100vh - 100px)'
         border={1}
         borderRadius={2}
         m={2}
