@@ -32,7 +32,7 @@ export default function ResourcePanel() {
       await fetchResources();
       setOpen(false);
     }
-  };  
+  };
 
   const toggleSelectFile = (index: number) => {
     setSelectedFiles((prev) =>
