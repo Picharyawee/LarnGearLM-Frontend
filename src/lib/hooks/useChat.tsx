@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { giveInstructions } from "../api/resource";
 
 interface Message {
   id: number;
@@ -59,28 +60,12 @@ export const useChat = (): UseChatReturn => {
     setIsLoading(true);
 
     try{
-      const response = await fetch("http://localhost:8000/give-instruction/", { 
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ instruction: userMessage }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const response = await giveInstructions(userMessage, []);
 
       let aiResponseText = "ไม่พบการตอบกลับจาก AI";
 
-      if (data && data.response) {
-        aiResponseText = data.response;
-      } else if (data && data.message && data.message.content) {
-        aiResponseText = data.message.content;
-      } else {
-        console.warn("Unexpected AI response structure:", data);
+      if (response.data) {
+        aiResponseText = response.data.response
       }
 
       setMessages((prevMessages) => [
