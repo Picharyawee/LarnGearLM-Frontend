@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
 import Image from "next/image";
+import CloseIcon from "@mui/icons-material/Close"
 
 export default function UploadDialog({
   open,
@@ -18,10 +19,21 @@ export default function UploadDialog({
       maxWidth="md"
     >
       <DialogTitle
+        display={'flex'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
         borderBottom={1}
         mb={2}
       >
-        เพิ่มแหล่งข้อมูล
+        <Typography variant="h6">
+          เพิ่มแหล่งข้อมูล
+        </Typography>
+
+        <IconButton
+        onClick={handleClose}
+        >
+          <CloseIcon />
+        </IconButton>
       </DialogTitle>
 
       <DialogContent
@@ -39,6 +51,7 @@ export default function UploadDialog({
             borderRadius: '8px',
             width: '100%',
             minHeight: '400px',
+            //height: '100%',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',

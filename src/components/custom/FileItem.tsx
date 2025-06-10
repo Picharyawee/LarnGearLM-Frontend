@@ -21,7 +21,7 @@ export default function FileItem({
       px={2}
       py={0.5}
       border={1}
-      borderRadius='8px'
+      borderRadius='4px'
       bgcolor="white"
     >
       <Typography color="#2d3748" noWrap>

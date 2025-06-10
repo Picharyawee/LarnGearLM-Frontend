@@ -104,7 +104,7 @@ export default function ResourcePanel() {
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            px={2}
+            px={4}
             py={1}
             borderRadius={1}
             bgcolor="white"
