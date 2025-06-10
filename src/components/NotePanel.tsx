@@ -1,12 +1,33 @@
+"use client"
+
 import React from "react";
-import { Box , Button , Stack, Typography } from '@mui/material';
+import { Box , Typography , IconButton } from '@mui/material';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import NoteList from "./custom/NoteList";
+import AddEditNote from "./custom/AddEditNote";
+import useNotes from "@/lib/hooks/useNotes";
 
 export default function NotePanel() {
+    const {
+        notes,
+        newNoteContent,
+        isAddingNote,
+        selectedNote,
+        setNewNoteContent,
+        handleAddNote,
+        handleDeleteNoteByID,
+        handleViewNote,
+        handleSaveEditNote,
+        handleCancelAction,
+        setIsAddingNote,
+    } = useNotes();
+
     return (
         <Box
         display="flex"
-        width="25%"
         flexDirection="column"
+        width="25%"
+        height='calc(100vh - 100px)'
         border={1}
         borderRadius={2}
         m={2}
@@ -15,6 +36,9 @@ export default function NotePanel() {
             borderBottom={1}
             p={2}
             mb={2}
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
             >
                 <Typography 
                 variant="h6" 
@@ -22,90 +46,36 @@ export default function NotePanel() {
                 >
                     โน้ต
                 </Typography>
-            </Box>
 
-            <Box px={2}>
-                <Button
-                fullWidth
-                variant="contained"
-                sx={{
-                    backgroundColor: '#2d3748',
-                    borderRadius: '8px',
-                    '&:hover': { backgroundColor: '#1a202c' },
-                    justifyContent: 'center',
-                    gap: 1,
-                    py: 1.5
-                }}
-
-                startIcon={
-                    <img
-                    src='/img/Plus.svg'
-                    alt='Plus Icon'
-                    width={24}
-                    height={24}
-                    />
-                }
-                >
-                    <Typography sx={{ color: 'white' }}>
-                        เพิ่มโน้ต
-                    </Typography>
-                </Button>
-            </Box>
-
-            <Box
-            display={"flex"}
-            flexDirection={"column"}
-            flexGrow={1}
-            alignItems={"center"}
-            justifyContent={"center"}
-            textAlign={"center"}
-            mx={"auto"}
-            gap={2}
-            px={4}
-            color={"text.secondary"}
-            >
-                <img
-                src='/img/NoteBook.svg'
-                alt='Notebook Icon'
-                width={80}
-                height={80}
-                />
-
-                <Typography>
-                    โน้ตที่บันทึกไว้จะปรากฏที่นี่<br/>
-                    บันทึกข้อความแชทเพื่อสร้างโน้ตใหม่หรือคลิกเพิ่มโน้ตด้านบน
-                </Typography>
-            </Box>
-
-            {/* <Box px={2}>
-                <Stack spacing={2}>
-                    <Button
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                        backgroundColor: '#2d3748',
-                        borderRadius: '8px',
-                        '&:hover': { backgroundColor: '#1a202c' },
-                        justifyContent: 'center',
-                        gap: 1,
-                        py: 1.5
-                    }}
-
-                    startIcon={
-                        <img
-                        src='/img/Plus.svg'
-                        alt='Plus Icon'
-                        width={24}
-                        height={24}
-                        />
-                    }
+                {(isAddingNote || selectedNote) && (
+                    <IconButton 
+                    sx={{ 
+                        width: '24px', 
+                        height: '24px' 
+                    }}  
+                    onClick={handleCancelAction}
                     >
-                        <Typography sx={{ color: 'white' }}>
-                            เพิ่มโน้ต
-                        </Typography>
-                    </Button>
-                </Stack>
-            </Box> */}
+                        <ArrowBackIcon/>
+                    </IconButton>
+                )}
+            </Box>
+
+            {(isAddingNote || selectedNote) ? (
+                <AddEditNote
+                selectedNote={selectedNote}
+                newNoteContent={newNoteContent}
+                onContentChange={(e) => setNewNoteContent(e.target.value)}
+                onSave={handleSaveEditNote}
+                onCancel={handleCancelAction}
+                onDelete={handleDeleteNoteByID}
+                />
+            ) : (
+                <NoteList
+                notes={notes}
+                onAddNoteClick={() => setIsAddingNote(true)}
+                onSelectNote={handleViewNote}
+                />
+            )}
         </Box>
     );
 }
