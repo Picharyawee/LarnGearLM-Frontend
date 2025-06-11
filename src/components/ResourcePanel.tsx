@@ -1,18 +1,28 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Checkbox, Typography } from '@mui/material';
 import Image from "next/image";
 import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
-import { uploadResource, getResources } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
+import { useResourceContext } from "@/contexts/ResourceContext";
 
 export default function ResourcePanel() {
-  const [open, setOpen] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
-  const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  const {
+    open,
+    setOpen,
+    uploadedFiles,
+    setUploadedFiles,
+    selectedFiles,
+    setSelectedFiles,
+    handleFileUpload,
+    toggleSelectFile,
+    toggleSelectAll,
+    fetchResources
+  } = useResourceContext();
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -21,52 +31,6 @@ export default function ResourcePanel() {
   const handleClose = () => {
     setOpen(false);
   }
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // turn file into FormData
-      const formData = new FormData();
-      formData.append('uploaded_file', file);
-      await uploadResource(formData)
-      await fetchResources();
-      setOpen(false);
-    }
-  };
-
-  const toggleSelectFile = (index: number) => {
-    setSelectedFiles((prev) =>
-      prev.includes(index)
-        ? prev.filter((i) => i !== index)
-        : [...prev, index]
-    );
-  };
-
-  const toggleSelectAll = () => {
-    if (selectedFiles.length === uploadedFiles.length) {
-      setSelectedFiles([]);
-    } else {
-      setSelectedFiles(uploadedFiles.map((_, i) => i));
-    }
-  };
-
-  const fetchResources = async () => {
-    try {
-      const response = await getResources();
-      console.log("Fetched resources:", response.data);
-      if (response.data) {
-        const files: FileProps[] = response.data.files;
-        setUploadedFiles(files);
-      }
-    } catch (error) {
-      console.error("Error fetching resources:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchResources();
-  }, []);
-
 
   return (
     <Box
@@ -125,10 +89,10 @@ export default function ResourcePanel() {
             px={2}
             mt={1}
           >
-            {uploadedFiles.map((file, index) => (
+            {uploadedFiles.map((fileProp: FileProps, index: number) => (
               <FileItem
                 key={index}
-                fileProps={file}
+                fileProps={fileProp}
                 index={index}
                 isSelected={selectedFiles.includes(index)}
                 toggleSelectFile={toggleSelectFile}
