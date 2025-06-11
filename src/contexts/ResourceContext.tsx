@@ -14,6 +14,7 @@ interface ResourceContextProps {
   toggleSelectFile: (index: number) => void;
   toggleSelectAll: () => void;
   fetchResources: () => Promise<void>;
+  getListOfFilename: () => string[];
 }
 
 const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
@@ -59,6 +60,10 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
     }
   };
 
+  const getListOfSelectedFilename = () => {
+    return selectedFiles.map((index) => uploadedFiles[index].filename); // TODO: stop using index
+  };
+
   const fetchResources = async () => {
     try {
       const response = await getResources();
@@ -87,6 +92,7 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
       handleFileUpload,
       toggleSelectFile,
       toggleSelectAll,
+      getListOfFilename: getListOfSelectedFilename,
       fetchResources
     }}>
       {children}
