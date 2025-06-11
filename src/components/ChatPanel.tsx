@@ -56,18 +56,25 @@ export default function ChatPanel() {
           color="text.secondary"
           gap={2}
           >
-            <IconButton>
+            {/* <IconButton>
               <Image
                 src="/img/UploadedIcon.svg"
                 alt="Uploaded Icon"
                 width={48}
                 height={48}
               />
-            </IconButton>
+            </IconButton> */}
 
-            <Typography>เพิ่มแหล่งข้อมูลเพื่อเริ่มต้น</Typography>
+            {/* <Image
+              src="/img/FileText.svg"
+              alt="File Icon"
+              width={80}
+              height={80}
+            /> */}
 
-            <Button
+            <Typography>โปรดเพิ่มแหล่งข้อมูลเพื่อเริ่มต้น</Typography>
+
+            {/* <Button
             variant="contained"
             sx={{
               backgroundColor: '#2d3748',
@@ -78,7 +85,7 @@ export default function ChatPanel() {
             }}
             >
               อัปโหลดแหล่งข้อมูล
-            </Button>
+            </Button> */}
           </Box>
         ) : (
           messages.map((msg) => (
@@ -133,6 +140,7 @@ export default function ChatPanel() {
           <Box 
           display={'flex'} 
           justifyContent={'center'}
+          alignItems={'center'}
           sx={{ 
             alignSelf: 'flex-start', 
             mb: 1, p: 1.5 
