@@ -36,17 +36,13 @@ export default function useNotes(initialNotes: Note[] = []): UseNotesReturn {
         content: newNoteContent.trim()
       };
       setNotes(prevNotes => [...prevNotes, newNote]); //เอาโน้ตที่เพิ่งสร้างมาต่อท้ายโน้ตก่อนหน้า
-      setNewNoteContent("");
-      setIsAddingNote(false);
-      setSelectedNote(null);
+      handleCancelAction();
     }
   };
 
   const handleDeleteNoteByID = (idToDelete: number): void => {
     setNotes(prevNotes => prevNotes.filter(note => note.id !== idToDelete)); //ลบโน้ตที่มีไอดีตรงกับที่ต้องการลบ
-    setNewNoteContent("");
-    setIsAddingNote(false);
-    setSelectedNote(null);
+    handleCancelAction();
   };
 
   const handleViewNote = (note: Note): void => {
@@ -64,9 +60,7 @@ export default function useNotes(initialNotes: Note[] = []): UseNotesReturn {
             : note
         )
       );
-      setSelectedNote(null);
-      setNewNoteContent("");
-      setIsAddingNote(false);
+      handleCancelAction();
     } else if (selectedNote === null && newNoteContent.trim() !== "") { //ถ้าไม่โน้ตที่ถูกเลือก จะสร้างโน้ตใหม่
       handleAddNote();
     }
