@@ -20,7 +20,6 @@ export default function ResourcePanel() {
     handleFileUpload,
     toggleSelectFile,
     toggleSelectAll,
-    fetchResources
   } = useResourceContext();
 
 
