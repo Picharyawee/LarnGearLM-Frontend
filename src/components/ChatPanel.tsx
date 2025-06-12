@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Box , TextField , Button , Typography , IconButton , CircularProgress } from "@mui/material";
+import { Box , TextField , Typography , IconButton , CircularProgress } from "@mui/material";
 import Image from "next/image";
 import { useChat } from "@/lib/hooks/useChat";
 
