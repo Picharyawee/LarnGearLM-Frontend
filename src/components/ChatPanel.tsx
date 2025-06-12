@@ -13,7 +13,6 @@ export default function ChatPanel() {
     handleMessageChange,
     handleSendMessage,
     handleKeyPress,
-    setCurrentMessage
   } = useChat();
 
   return (
