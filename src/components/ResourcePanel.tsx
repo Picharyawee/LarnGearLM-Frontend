@@ -14,7 +14,6 @@ export default function ResourcePanel() {
     open,
     setOpen,
     uploadedFiles,
-    setUploadedFiles,
     selectedFiles,
     handleFileUpload,
     toggleSelectFile,
