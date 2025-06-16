@@ -18,11 +18,14 @@ export default function ChatPanel() {
   return (
     <Box
       display="flex"
-      width="50%"
+      // width="50%"
       flexDirection="column"
-      m={2}
-      border={1}
-      borderRadius={2}
+      // m={2}
+      // border={1}
+      // borderRadius={2}
+      //minHeight={'100%'}
+      //height={'100%'}
+      flexGrow={1}
     >
       <Typography
         variant="h6"
@@ -38,6 +41,7 @@ export default function ChatPanel() {
       display={'flex'}
       flexDirection={'column'}
       flexGrow={1}
+      //minHeight={'100%'}
       px={4}
       py={2}
       sx={{

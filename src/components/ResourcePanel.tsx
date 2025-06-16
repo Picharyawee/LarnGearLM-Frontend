@@ -33,10 +33,11 @@ export default function ResourcePanel() {
     <Box
       display="flex"
       flexDirection="column"
-      width="25%"
-      m={2}
-      border={1}
-      borderRadius={2}
+      flexGrow={1}
+      // width="25%"
+      // m={2}
+      // border={1}
+      // borderRadius={2}
     >
       <Typography
         variant="h6"
