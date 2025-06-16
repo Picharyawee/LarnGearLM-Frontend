@@ -13,7 +13,8 @@ interface FileProps {
 }
 
 interface ResourceState {
-  open: boolean;
+  openModal: boolean;
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   uploadedFiles: FileProps[];
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   toggleFileSelection: (id: string) => void;
@@ -22,7 +23,7 @@ interface ResourceState {
 }
 
 export const useResource = (): ResourceState => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +33,7 @@ export const useResource = (): ResourceState => {
       formData.append('uploaded_file', file);
       await uploadResource(formData)
       await fetchResources();
-      setOpen(false);
+      setOpenModal(false);
     }
   };
 
@@ -76,7 +77,8 @@ export const useResource = (): ResourceState => {
   }, []);
 
   return {
-    open,
+    openModal: openModal,
+    setOpenModal: setOpenModal,
     uploadedFiles,
     handleFileUpload,
     toggleFileSelection,
