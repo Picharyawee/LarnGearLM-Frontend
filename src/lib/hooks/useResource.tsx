@@ -15,6 +15,10 @@ interface FileProps {
 interface ResourceState {
   open: boolean;
   uploadedFiles: FileProps[];
+  handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  toggleFileSelection: (id: string) => void;
+  toggleSelectAll: () => void;
+  getListOfSelectedFilename: () => string[];
 }
 
 export const useResource = (): ResourceState => {
@@ -73,6 +77,10 @@ export const useResource = (): ResourceState => {
 
   return {
     open,
-    uploadedFiles
+    uploadedFiles,
+    handleFileUpload,
+    toggleFileSelection,
+    toggleSelectAll,
+    getListOfSelectedFilename
   };
 };
