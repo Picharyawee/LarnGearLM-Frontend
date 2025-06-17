@@ -1,16 +1,24 @@
-import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
+import { Dialog, TextField, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
 import Image from "next/image";
+import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close"
 
 export default function UploadDialog({
   open,
   handleClose,
-  handleFileUpload
+  handleFileUpload,
+  handleLinkUpload,
+  handleTextUpload
 }: {
   open: boolean;
   handleClose: () => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleLinkUpload: (url: string) => void;
+  handleTextUpload: (text: string) => void;
 }) {
+  const [linkInput, setLinkInput] = useState('');
+  const [textInput, setTextInput] = useState('');
+
   return (
     <Dialog
       open={open}
@@ -39,6 +47,7 @@ export default function UploadDialog({
       <DialogContent
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '60vh'
@@ -112,6 +121,60 @@ export default function UploadDialog({
                             }
                         }}
                         /> */}
+        </Box>
+
+        <Box
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        width={'100%'}
+        gap={2}
+        >
+          <TextField
+          label="เพิ่มลิงก์แหล่งข้อมูล"
+          variant="outlined"
+          fullWidth
+          value={linkInput}
+          onChange={(e) => setLinkInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleLinkUpload(linkInput);
+              setLinkInput('');
+            }
+          }}
+          sx={{ 
+            mt: 2 
+          }}
+          />
+
+          <TextField
+          label="เพิ่มข้อความ"
+          multiline
+          minRows={1}
+          maxRows={6}
+          variant="outlined"
+          fullWidth
+          value={textInput}
+          onChange={(e) => setTextInput(e.target.value)}
+          sx={{ 
+            mt: 2 
+          }}
+          />
+
+          <Button
+          variant="contained"
+          onClick={() => {
+            handleTextUpload(textInput);
+            setTextInput('');
+          }}
+          sx={{ 
+            mt: 2, 
+            backgroundColor: '#2d3748', 
+            '&:hover': { backgroundColor: '#1a202c' } 
+          }}
+          >
+            บันทึก
+          </Button>
         </Box>
       </DialogContent>
 

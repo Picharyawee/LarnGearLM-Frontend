@@ -11,6 +11,8 @@ interface ResourceContextProps {
   selectedFiles: number[];
   setSelectedFiles: React.Dispatch<React.SetStateAction<number[]>>;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  handleLinkUpload: (url: string) => void;
+  handleTextUpload: (text: string) => void;
   toggleSelectFile: (index: number) => void;
   toggleSelectAll: () => void;
   fetchResources: () => Promise<void>;
@@ -31,6 +33,8 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
   const [open, setOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
+  const [linkInput, setLinkInput] = useState('');
+  const [textInput, setTextInput] = useState('');
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -42,6 +46,16 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
       await fetchResources();
       setOpen(false);
     }
+  };
+
+  const handleLinkUpload = (url: string) => {
+    // API upload Link
+    setOpen(false);
+  };
+
+  const handleTextUpload = (text: string) => {
+    // API upload Text
+    setOpen(false);
   };
 
   const toggleSelectFile = (index: number) => {
@@ -90,6 +104,8 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
       selectedFiles,
       setSelectedFiles,
       handleFileUpload,
+      handleLinkUpload,
+      handleTextUpload,
       toggleSelectFile,
       toggleSelectAll,
       getListOfFilename: getListOfSelectedFilename,

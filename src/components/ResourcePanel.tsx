@@ -127,6 +127,8 @@ export default function ResourcePanel() {
         open={open}
         handleClose={handleClose}
         handleFileUpload={handleFileUpload}
+        handleLinkUpload={{/*handleLinkUpload*/}}
+        handleTextUpload={{/*handleTextUpload*/}}
       />
     </Box>
   );
