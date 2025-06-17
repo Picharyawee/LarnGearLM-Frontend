@@ -6,6 +6,8 @@ import { Note } from "@/lib/hooks/useNotes";
 interface AddEditNoteProps {
   selectedNote: Note | null;
   newNoteContent: string;
+  newNoteTitle: string;
+  onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onContentChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -15,7 +17,9 @@ interface AddEditNoteProps {
 export default function AddEditNote({
   selectedNote,
   newNoteContent,
+  newNoteTitle,
   onContentChange,
+  onTitleChange,
   onSave,
   onCancel,
   onDelete,
@@ -32,14 +36,32 @@ export default function AddEditNote({
         justifyContent={'space-between'}
         alignItems={'center'}
         textAlign={'center'}
-        p={2}
+        //p={2}
+        px={2}
         borderBottom={1}
         mt={-2}
         mx={-2}
       >
-        <Typography>
+        {/* <Typography>
           {selectedNote ? "แก้ไขโน้ต" : "โน้ตใหม่"}
-        </Typography>
+        </Typography> */}
+
+        <TextField
+        fullWidth
+        placeholder='ชื่อโน้ต'
+        value={newNoteTitle}
+        //variant='outlined'
+        sx={{
+          '& .MuiOutlinedInput-root': {
+          height: '100%',
+          alignItems: 'flex-start',
+          '& fieldset': { border: 'none' },
+          '&:hover fieldset': { border: 'none' },
+          '&.Mui-focused fieldset': { border: 'none' },
+        }
+        }}
+        onChange={onTitleChange}
+        />
 
         {selectedNote && (
           <IconButton
@@ -54,23 +76,31 @@ export default function AddEditNote({
         )}
       </Box>
 
+      {/* <TextField
+      fullWidth
+      placeholder='ชื่อโน้ต'
+      value={newNoteTitle}
+      variant='outlined'
+      onChange={onTitleChange}
+      /> */}
+
       <TextField
-        fullWidth
-        multiline
-        placeholder="เริ่มพิมพ์..."
-        value={newNoteContent}
-        variant="outlined"
-        sx={{
-          flexGrow: 1,
-          '& .MuiOutlinedInput-root': {
-            height: '100%',
-            alignItems: 'flex-start',
-            '& fieldset': { border: 'none' },
-            '&:hover fieldset': { border: 'none' },
-            '&.Mui-focused fieldset': { border: 'none' },
-          }
-        }}
-        onChange={onContentChange}
+      fullWidth
+      multiline
+      placeholder="เริ่มพิมพ์..."
+      value={newNoteContent}
+      variant="outlined"
+      sx={{
+        flexGrow: 1,
+        '& .MuiOutlinedInput-root': {
+          height: '100%',
+          alignItems: 'flex-start',
+          '& fieldset': { border: 'none' },
+          '&:hover fieldset': { border: 'none' },
+          '&.Mui-focused fieldset': { border: 'none' },
+        }
+      }}
+      onChange={onContentChange}
       />
 
       <Box

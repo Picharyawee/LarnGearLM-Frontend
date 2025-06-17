@@ -11,7 +11,7 @@ interface NoteListProps {
 export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteListProps) {
   return (
     <Box 
-    px={2} 
+    px={2}
     flexGrow={1} 
     display='flex' 
     flexDirection='column'>
@@ -92,9 +92,7 @@ export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteLi
                 height={24}
               />
               <Typography>
-                {note.content.length > 10
-                  ? note.content.substring(0, 10) + '...'
-                  : note.content}
+                {note.title}
               </Typography>
             </Box>
           ))}
