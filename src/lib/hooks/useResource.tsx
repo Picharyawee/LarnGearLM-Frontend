@@ -1,25 +1,18 @@
 import { useState } from 'react';
 import { uploadResource, getResources } from "@/lib/api/resource";
 import { useEffect } from 'react';
-
-interface FileProps {
-  id: string;
-  filename: string;
-  url: string;
-  content_type: string;
-  isSelected: boolean;
-  last_modified: string;
-  size: number;
-}
+import { FileProps } from "@/lib/types/FileProps";
 
 interface ResourceState {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   uploadedFiles: FileProps[];
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  isSelectAll: () => boolean;
+  isSelectSome: () => boolean;
   toggleFileSelection: (id: string) => void;
   toggleSelectAll: () => void;
-  getListOfSelectedFilename: () => string[];
+  getListOfSelectedFileId: () => string[];
 }
 
 export const useResource = (): ResourceState => {
@@ -37,6 +30,9 @@ export const useResource = (): ResourceState => {
     }
   };
 
+  const isSelectAll = (): boolean => uploadedFiles.length > 0 && uploadedFiles.every(file => file.isSelected);
+  const isSelectSome = (): boolean => uploadedFiles.some(file => file.isSelected) && !isSelectAll();
+
   const toggleFileSelection = (id: string) => {
     setUploadedFiles(prevFiles =>
       prevFiles.map(file =>
@@ -52,8 +48,8 @@ export const useResource = (): ResourceState => {
     );
   };
 
-  const getListOfSelectedFilename = () => {
-    return uploadedFiles.filter(file => file.isSelected).map(file => file.filename);
+  const getListOfSelectedFileId = () => {
+    return uploadedFiles.filter(file => file.isSelected).map(file => file.id);
   };
 
   const fetchResources = async () => {
@@ -79,10 +75,12 @@ export const useResource = (): ResourceState => {
   return {
     openModal: openModal,
     setOpenModal: setOpenModal,
-    uploadedFiles,
-    handleFileUpload,
-    toggleFileSelection,
-    toggleSelectAll,
-    getListOfSelectedFilename
+    uploadedFiles: uploadedFiles,
+    handleFileUpload: handleFileUpload,
+    isSelectAll: isSelectAll,
+    isSelectSome: isSelectSome,
+    toggleFileSelection: toggleFileSelection,
+    toggleSelectAll: toggleSelectAll,
+    getListOfSelectedFileId: getListOfSelectedFileId
   };
 };

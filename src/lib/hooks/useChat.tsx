@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { giveInstructions } from "../api/resource";
-import { useResourceContext } from "@/contexts/ResourceContext";
+import { useResource } from "./useResource";
 
 interface Message {
   id: number;
@@ -28,7 +28,7 @@ interface UseChatReturn {
 }
 
 export const useChat = (): UseChatReturn => {
-  const { getListOfFilename } = useResourceContext();
+  const { getListOfSelectedFileId } = useResource();
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,7 +62,7 @@ export const useChat = (): UseChatReturn => {
     setIsLoading(true);
 
     try{
-      const response = await giveInstructions(userMessage, getListOfFilename());
+      const response = await giveInstructions(userMessage, getListOfSelectedFileId());
 
       let aiResponseText = "ไม่พบการตอบกลับจาก AI";
 

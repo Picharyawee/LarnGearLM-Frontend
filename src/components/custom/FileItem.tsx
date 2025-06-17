@@ -3,18 +3,14 @@ import { FileProps } from "@/lib/types/FileProps";
 
 export default function FileItem({
   fileProps,
-  index,
-  isSelected,
   toggleSelectFile
 }: {
   fileProps: FileProps;
-  index: number;
-  isSelected: boolean;
-  toggleSelectFile: (index: number) => void;
+  toggleSelectFile: (id: string) => void;
 }) {
   return (
     <Box
-      key={index}
+      key={fileProps.id}
       display="flex"
       justifyContent="space-between"
       alignItems="center"
@@ -28,8 +24,8 @@ export default function FileItem({
         {fileProps.filename}
       </Typography>
       <Checkbox
-        checked={isSelected}
-        onChange={() => toggleSelectFile(index)}
+        checked={fileProps.isSelected}
+        onChange={() => toggleSelectFile(fileProps.id)}
       />
     </Box>
   );
