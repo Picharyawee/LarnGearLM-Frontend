@@ -9,6 +9,7 @@ interface AddEditNoteProps {
   newNoteTitle: string;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onContentChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onConvertToResource: () => void;
   onSave: () => void;
   onCancel: () => void;
   onDelete: (id: number) => void;
@@ -20,6 +21,7 @@ export default function AddEditNote({
   newNoteTitle,
   onContentChange,
   onTitleChange,
+  onConvertToResource,
   onSave,
   onCancel,
   onDelete,
@@ -159,7 +161,7 @@ export default function AddEditNote({
           mx: 'auto',
           mb: 2
         }}
-        onClick={onSave}
+        onClick={onConvertToResource}
         startIcon={
           <img
             src='/img/Plus.svg'

@@ -8,6 +8,7 @@ interface ResourceState {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   uploadedFiles: FileProps[];
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  handleNoteToTextResource: (title: string, content: string) => Promise<void>;
   isSelectAll: () => boolean;
   isSelectSome: () => boolean;
   toggleFileSelection: (id: string) => void;
@@ -71,11 +72,29 @@ export const useResource = (): ResourceState => {
     fetchResources();
   }, []);
 
+  const handleNoteToTextResource = async (title: string, content: string) => {
+    try{
+      const formData = new FormData();
+      const blob = new Blob([content], {type: "text/plain"});
+      const file = new File([blob], `${title || "Untitled"}.txt`, { type: "text/plain" });
+
+      formData.append("uploaded_file", file);
+
+      await uploadResource(formData);
+      await fetchResources();
+      
+      setOpenModal(false);
+    } catch(error){
+      console.error("Error uploading note as resource:", error);
+    }
+  }
+
   return {
     openModal: openModal,
     setOpenModal: setOpenModal,
     uploadedFiles: uploadedFiles,
     handleFileUpload: handleFileUpload,
+    handleNoteToTextResource: handleNoteToTextResource,
     isSelectAll: isSelectAll,
     isSelectSome: isSelectSome,
     toggleFileSelection: toggleFileSelection,
