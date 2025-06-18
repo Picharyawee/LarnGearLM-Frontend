@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { uploadResource, getResources } from "@/lib/api/resource";
+import { uploadResource, getResources, deleteResource } from "@/lib/api/resource";
 import { useEffect } from 'react';
 import { FileProps } from "@/lib/types/FileProps";
 
@@ -13,6 +13,7 @@ interface ResourceState {
   toggleFileSelection: (id: string) => void;
   toggleSelectAll: () => void;
   getListOfSelectedFileId: () => string[];
+  deleteFileById: (fileId: string) => Promise<void>;
 }
 
 export const useResource = (): ResourceState => {
@@ -71,6 +72,15 @@ export const useResource = (): ResourceState => {
     fetchResources();
   }, []);
 
+  const handleDeleteFile = async (fileId: string) => {
+  try {
+    await deleteResource(fileId); // call backend
+    setUploadedFiles(prev => prev.filter(file => file.id !== fileId)); // update UI
+  } catch (error) {
+    console.error(`Failed to delete file ${fileId}:`, error);
+  }
+};
+
   return {
     openModal: openModal,
     setOpenModal: setOpenModal,
@@ -80,6 +90,7 @@ export const useResource = (): ResourceState => {
     isSelectSome: isSelectSome,
     toggleFileSelection: toggleFileSelection,
     toggleSelectAll: toggleSelectAll,
-    getListOfSelectedFileId: getListOfSelectedFileId
+    getListOfSelectedFileId: getListOfSelectedFileId,
+    deleteFileById: handleDeleteFile
   };
 };

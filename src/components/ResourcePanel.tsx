@@ -19,6 +19,7 @@ export default function ResourcePanel() {
     isSelectSome,
     toggleFileSelection,
     toggleSelectAll,
+    deleteFileById
   } = useResource();
 
 
@@ -93,6 +94,7 @@ export default function ResourcePanel() {
                 key={fileProp.id}
                 fileProps={fileProp}
                 toggleSelectFile={toggleFileSelection}
+                onDeleteFile={deleteFileById}
               />
             ))}
           </Box>
