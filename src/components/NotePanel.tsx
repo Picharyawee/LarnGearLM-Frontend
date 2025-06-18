@@ -11,9 +11,12 @@ export default function NotePanel() {
     const {
         notes,
         newNoteContent,
+        noteTitle,
         isAddingNote,
         selectedNote,
         setNewNoteContent,
+        setNoteTitle,
+        handleTitleChange,
         handleAddNote,
         handleDeleteNoteByID,
         handleViewNote,
@@ -64,6 +67,8 @@ export default function NotePanel() {
                 <AddEditNote
                 selectedNote={selectedNote}
                 newNoteContent={newNoteContent}
+                newNoteTitle={noteTitle}
+                onTitleChange={handleTitleChange}
                 onContentChange={(e) => setNewNoteContent(e.target.value)}
                 onSave={handleSaveEditNote}
                 onCancel={handleCancelAction}
