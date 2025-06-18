@@ -7,26 +7,27 @@ import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
 import { FileProps } from "@/lib/types/FileProps";
-import { useResourceContext } from "@/contexts/ResourceContext";
+import { useResource } from "@/lib/hooks/useResource";
 
 export default function ResourcePanel() {
   const {
-    open,
-    setOpen,
+    openModal,
+    setOpenModal,
     uploadedFiles,
-    selectedFiles,
     handleFileUpload,
-    toggleSelectFile,
+    isSelectAll,
+    isSelectSome,
+    toggleFileSelection,
     toggleSelectAll,
-  } = useResourceContext();
+  } = useResource();
 
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenModal(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenModal(false);
   }
 
   return (
@@ -75,8 +76,8 @@ export default function ResourcePanel() {
             </Typography>
 
             <Checkbox
-              checked={selectedFiles.length === uploadedFiles.length && uploadedFiles.length > 0}
-              indeterminate={selectedFiles.length > 0 && selectedFiles.length < uploadedFiles.length}
+              checked={isSelectAll()}
+              indeterminate={isSelectSome()}
               onChange={toggleSelectAll}
             />
           </Box>
@@ -86,13 +87,11 @@ export default function ResourcePanel() {
             px={2}
             mt={1}
           >
-            {uploadedFiles.map((fileProp: FileProps, index: number) => (
+            {uploadedFiles.map((fileProp: FileProps) => (
               <FileItem
-                key={index}
+                key={fileProp.id}
                 fileProps={fileProp}
-                index={index}
-                isSelected={selectedFiles.includes(index)}
-                toggleSelectFile={toggleSelectFile}
+                toggleSelectFile={toggleFileSelection}
               />
             ))}
           </Box>
@@ -123,7 +122,7 @@ export default function ResourcePanel() {
       )}
 
       <UploadDialog
-        open={open}
+        open={openModal}
         handleClose={handleClose}
         handleFileUpload={handleFileUpload}
       />
