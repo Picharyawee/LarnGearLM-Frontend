@@ -26,10 +26,11 @@ export default function NotePanel() {
         <Box
         display="flex"
         flexDirection="column"
-        width="25%"
-        border={1}
-        borderRadius={2}
-        m={2}
+        flexGrow={1}
+        // width="25%"
+        // border={1}
+        // borderRadius={2}
+        // m={2}
         >
             <Box
             borderBottom={1}
