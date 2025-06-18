@@ -10,13 +10,6 @@ interface Message {
   //timestamp: string;
 }
 
-interface APIResponse {
-  response?: string;
-  message?: {
-    content: string;
-  };
-}
-
 interface UseChatReturn {
   currentMessage: string;
   messages: Message[];

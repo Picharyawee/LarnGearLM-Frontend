@@ -55,7 +55,6 @@ export const useResource = (): ResourceState => {
   const fetchResources = async () => {
     try {
       const response = await getResources();
-      console.log("Fetched resources:", response.data);
       if (response.data) {
         const files: FileProps[] = response.data.files;
         files.forEach(file => {
