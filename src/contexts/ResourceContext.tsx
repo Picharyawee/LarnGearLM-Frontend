@@ -13,6 +13,7 @@ interface ResourceContextProps {
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   handleLinkUpload: (url: string) => void;
   handleTextUpload: (text: string) => void;
+  handleNoteToTextResource: (title: string, content: string) => Promise<void>;
   toggleSelectFile: (index: number) => void;
   toggleSelectAll: () => void;
   fetchResources: () => Promise<void>;
@@ -95,6 +96,23 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
     fetchResources();
   }, []);
 
+  const handleNoteToTextResource = async (title: string, content: string) => {
+    try{
+      const formData = new FormData();
+      const blob = new Blob([content], {type: "text/plain"});
+      const file = new File([blob], `${title || "Untitled"}.txt`, { type: "text/plain" });
+
+      formData.append("uploaded_file", file);
+
+      await uploadResource(formData);
+      await fetchResources();
+      
+      setOpen(false);
+    } catch(error){
+      console.error("Error uploading note as resource:", error);
+    }
+  }
+
   return (
     <ResourceContext.Provider value={{
       open,
@@ -106,6 +124,7 @@ export const ResourceProvider = ({ children }: { children: React.ReactNode }) =>
       handleFileUpload,
       handleLinkUpload,
       handleTextUpload,
+      handleNoteToTextResource,
       toggleSelectFile,
       toggleSelectAll,
       getListOfFilename: getListOfSelectedFilename,

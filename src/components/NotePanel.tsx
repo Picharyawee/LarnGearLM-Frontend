@@ -6,6 +6,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import NoteList from "./custom/NoteList";
 import AddEditNote from "./custom/AddEditNote";
 import useNotes from "@/lib/hooks/useNotes";
+import { useResourceContext } from "@/contexts/ResourceContext";
 
 export default function NotePanel() {
     const {
@@ -24,6 +25,10 @@ export default function NotePanel() {
         handleCancelAction,
         setIsAddingNote,
     } = useNotes();
+
+    const {
+    handleNoteToTextResource,
+    } = useResourceContext();
 
     return (
         <Box
@@ -70,6 +75,7 @@ export default function NotePanel() {
                 newNoteTitle={noteTitle}
                 onTitleChange={handleTitleChange}
                 onContentChange={(e) => setNewNoteContent(e.target.value)}
+                onConvertToResource={() => handleNoteToTextResource(noteTitle, newNoteContent)}
                 onSave={handleSaveEditNote}
                 onCancel={handleCancelAction}
                 onDelete={handleDeleteNoteByID}
