@@ -6,11 +6,13 @@ import { useState } from "react";
 export default function FileItem({
   fileProps,
   toggleSelectFile,
-  onDeleteFile
+  onDeleteFile,
+  onPreviewFile
 }: {
   fileProps: FileProps;
   toggleSelectFile: (id: string) => void;
   onDeleteFile: (fileId: string) => void;
+  onPreviewFile: (file: FileProps) => void;
 }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -26,6 +28,11 @@ export default function FileItem({
     onDeleteFile(fileProps.id);
     handleMenuClose();
   };
+
+  const handlePreview = () => {
+    onPreviewFile(fileProps);
+    handleMenuClose();
+  }
 
   return (
     <Box
@@ -48,12 +55,14 @@ export default function FileItem({
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
+        <MenuItem onClick={handlePreview}>ดูเนื้อหา</MenuItem>
         <MenuItem onClick={handleDelete}>ลบแหล่งข้อมูล</MenuItem>
       </Menu>
 
-      <Typography color="#2d3748" noWrap>
+      <Typography color="#2d3748" noWrap flexGrow={1}>
         {fileProps.filename}
       </Typography>
+
       <Checkbox
         checked={fileProps.isSelected}
         onChange={() => toggleSelectFile(fileProps.id)}
