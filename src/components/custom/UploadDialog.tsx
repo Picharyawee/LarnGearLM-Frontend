@@ -16,14 +16,6 @@ export default function UploadDialog({
 }) {
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
-  const handleYouTubeSubmit = () => {
-    if(youtubeUrl.trim()){
-      handleCreateYoutubeTranscript(youtubeUrl);
-      setYoutubeUrl("");
-      handleClose();
-    }
-  }
-
   return (
     <Dialog
       open={open}
