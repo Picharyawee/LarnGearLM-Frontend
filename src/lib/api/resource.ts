@@ -8,6 +8,14 @@ export async function uploadResource(formData: FormData) {
   });
 }
 
+export async function createYoutubeTranscript(videoUrl: string) {
+  return api.post('/resources/youtube-transcript/', null, {
+    params: { 
+      video_url: videoUrl 
+    },
+  });
+}
+
 export async function getResources() {
   return api.get('/resources/');
 }

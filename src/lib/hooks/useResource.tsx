@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { uploadResource, getResources, deleteResource } from "@/lib/api/resource";
+import { uploadResource, createYoutubeTranscript, getResources, deleteResource } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
 
 type FileContentResult =
@@ -32,6 +32,8 @@ interface ResourceState {
   handleClickOpen: () => void;
   handleClose: () => void;
   setPreviewFile: React.Dispatch<React.SetStateAction<PreviewFile | null>>;
+
+  handleCreateYoutubeTranscript: (url: string) => Promise<void>;
 }
 
 export const useResource = (): ResourceState => {
@@ -150,6 +152,16 @@ export const useResource = (): ResourceState => {
     }
   };
 
+  const handleCreateYoutubeTranscript = async (url: string) => {
+    try {
+      await createYoutubeTranscript(url);
+      await fetchResources();
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Failed to create YouTube transcript:", error);
+    }
+  };
+
   return {
     openModal: openModal,
     setOpenModal: setOpenModal,
@@ -168,5 +180,7 @@ export const useResource = (): ResourceState => {
     handlePreviewFile,
     previewFile,
     setPreviewFile,
+
+    handleCreateYoutubeTranscript
   };
 };

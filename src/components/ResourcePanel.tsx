@@ -27,6 +27,7 @@ export default function ResourcePanel() {
     handleClickOpen,
     handleClose,
     setPreviewFile,
+    handleCreateYoutubeTranscript
   } = useResource();
 
   return (
@@ -146,11 +147,15 @@ export default function ResourcePanel() {
             open={openModal}
             handleClose={handleClose}
             handleFileUpload={handleFileUpload}
+            handleCreateYoutubeTranscript={handleCreateYoutubeTranscript}
           />
         </>
       ) : (
         <Box
           flexGrow={1}
+          sx={{
+            overflowY: 'scroll'
+          }}
         >
           <Typography 
           variant="subtitle1" 

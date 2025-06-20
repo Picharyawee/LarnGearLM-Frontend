@@ -1,16 +1,29 @@
-import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button, TextField } from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close"
+import { useState } from "react";
 
 export default function UploadDialog({
   open,
   handleClose,
-  handleFileUpload
+  handleFileUpload,
+  handleCreateYoutubeTranscript
 }: {
   open: boolean;
   handleClose: () => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCreateYoutubeTranscript: (url: string) => void;
 }) {
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+
+  const handleYouTubeSubmit = () => {
+    if(youtubeUrl.trim()){
+      handleCreateYoutubeTranscript(youtubeUrl);
+      setYoutubeUrl("");
+      handleClose();
+    }
+  }
+
   return (
     <Dialog
       open={open}
@@ -39,8 +52,10 @@ export default function UploadDialog({
       <DialogContent
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          gap: 2,
           minHeight: '60vh'
         }}
       >
@@ -100,19 +115,20 @@ export default function UploadDialog({
           >
             ประเภทไฟล์ที่รองรับ: PDF
           </Typography>
-
-          {/* <input
-                        type="file"
-                        accept="application/pdf"
-                        hidden
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                            setFile(file);
-                            }
-                        }}
-                        /> */}
         </Box>
+
+        <TextField
+          fullWidth
+          placeholder="วาง YouTube Link ที่นี่"
+          value={youtubeUrl}
+          onChange={(e) => setYoutubeUrl(e.target.value)}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+              handleCreateYoutubeTranscript(youtubeUrl);
+              setYoutubeUrl('');
+            }
+          }}
+          />
       </DialogContent>
 
       {/* <DialogActions>
