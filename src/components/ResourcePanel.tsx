@@ -154,7 +154,8 @@ export default function ResourcePanel() {
         <Box
           flexGrow={1}
           sx={{
-            overflowY: 'scroll'
+            overflowY: 'scroll',
+            maxWidth: '400px'
           }}
         >
           <Typography 
