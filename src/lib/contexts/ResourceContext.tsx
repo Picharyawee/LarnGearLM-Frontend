@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { uploadResource, getResources } from "@/lib/api/resource";
-import { useEffect } from 'react';
 import { FileProps } from "@/lib/types/FileProps";
 
-interface ResourceState {
+interface ResourceContextProps {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   uploadedFiles: FileProps[];
@@ -16,7 +15,9 @@ interface ResourceState {
   getListOfSelectedFileId: () => string[];
 }
 
-export const useResource = (): ResourceState => {
+const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
+
+export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
 
@@ -73,32 +74,44 @@ export const useResource = (): ResourceState => {
   }, []);
 
   const handleNoteToTextResource = async (title: string, content: string) => {
-    try{
+    try {
       const formData = new FormData();
-      const blob = new Blob([content], {type: "text/plain"});
+      const blob = new Blob([content], { type: "text/plain" });
       const file = new File([blob], `${title || "Untitled"}.txt`, { type: "text/plain" });
 
       formData.append("uploaded_file", file);
 
       await uploadResource(formData);
       await fetchResources();
-      
+
       setOpenModal(false);
-    } catch(error){
+    } catch (error) {
       console.error("Error uploading note as resource:", error);
     }
-  }
-
-  return {
-    openModal: openModal,
-    setOpenModal: setOpenModal,
-    uploadedFiles: uploadedFiles,
-    handleFileUpload: handleFileUpload,
-    handleNoteToTextResource: handleNoteToTextResource,
-    isSelectAll: isSelectAll,
-    isSelectSome: isSelectSome,
-    toggleFileSelection: toggleFileSelection,
-    toggleSelectAll: toggleSelectAll,
-    getListOfSelectedFileId: getListOfSelectedFileId
   };
+
+  return (
+    <ResourceContext.Provider value={{
+      openModal,
+      setOpenModal,
+      uploadedFiles,
+      handleFileUpload,
+      handleNoteToTextResource,
+      isSelectAll,
+      isSelectSome,
+      toggleFileSelection,
+      toggleSelectAll,
+      getListOfSelectedFileId
+    }}>
+      {children}
+    </ResourceContext.Provider>
+  );
 };
+
+export const useResourceContext = (): ResourceContextProps => {
+  const context = useContext(ResourceContext);
+  if (!context) {
+    throw new Error("useResourceContext must be used within a ResourceProvider");
+  }
+  return context;
+}

@@ -1,20 +1,18 @@
 import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close"
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 
-export default function UploadDialog({
-  open,
-  handleClose,
-  handleFileUpload
-}: {
-  open: boolean;
-  handleClose: () => void;
-  handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
+export default function UploadDialog({open}: {open: boolean}) {
+  const { 
+    setOpenModal,
+    handleFileUpload
+  } = useResourceContext();
+
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={() => setOpenModal(false)}
       fullWidth
       maxWidth="md"
     >
@@ -30,7 +28,7 @@ export default function UploadDialog({
         </Typography>
 
         <IconButton
-        onClick={handleClose}
+          onClick={() => setOpenModal(false)}
         >
           <CloseIcon />
         </IconButton>

@@ -6,7 +6,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import NoteList from "./custom/NoteList";
 import AddEditNote from "./custom/AddEditNote";
 import useNotes from "@/lib/hooks/useNotes";
-import { useResource } from "@/lib/hooks/useResource";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 
 export default function NotePanel() {
     const {
@@ -28,7 +28,7 @@ export default function NotePanel() {
 
     const {
     handleNoteToTextResource,
-    } = useResource();
+    } = useResourceContext();
 
     return (
         <Box

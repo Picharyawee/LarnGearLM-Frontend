@@ -1,13 +1,14 @@
 import { Box, Typography, Checkbox } from "@mui/material";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import { FileProps } from "@/lib/types/FileProps";
 
 export default function FileItem({
-  fileProps,
-  toggleSelectFile
+  fileProps
 }: {
   fileProps: FileProps;
-  toggleSelectFile: (id: string) => void;
 }) {
+  const { toggleFileSelection } = useResourceContext();
+
   return (
     <Box
       key={fileProps.id}
@@ -25,7 +26,7 @@ export default function FileItem({
       </Typography>
       <Checkbox
         checked={fileProps.isSelected}
-        onChange={() => toggleSelectFile(fileProps.id)}
+        onChange={() => toggleFileSelection(fileProps.id)}
       />
     </Box>
   );

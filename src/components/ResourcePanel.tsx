@@ -7,38 +7,27 @@ import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
 import { FileProps } from "@/lib/types/FileProps";
-import { useResource } from "@/lib/hooks/useResource";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 
 export default function ResourcePanel() {
   const {
     openModal,
     setOpenModal,
     uploadedFiles,
-    handleFileUpload,
     isSelectAll,
     isSelectSome,
-    toggleFileSelection,
     toggleSelectAll,
-  } = useResource();
-
-
-  const handleClickOpen = () => {
-    setOpenModal(true);
-  };
-
-  const handleClose = () => {
-    setOpenModal(false);
-  }
+  } = useResourceContext();
 
   return (
     <Box
       display="flex"
       flexDirection="column"
       flexGrow={1}
-      // width="25%"
-      // m={2}
-      // border={1}
-      // borderRadius={2}
+    // width="25%"
+    // m={2}
+    // border={1}
+    // borderRadius={2}
     >
       <Typography
         variant="h6"
@@ -51,7 +40,7 @@ export default function ResourcePanel() {
       </Typography>
 
       <AddButton
-        onClick={handleClickOpen}
+        onClick={() => setOpenModal(true)}
       >
         <Typography
           color="white"
@@ -92,7 +81,6 @@ export default function ResourcePanel() {
               <FileItem
                 key={fileProp.id}
                 fileProps={fileProp}
-                toggleSelectFile={toggleFileSelection}
               />
             ))}
           </Box>
@@ -122,13 +110,7 @@ export default function ResourcePanel() {
         </Box>
       )}
 
-      <UploadDialog
-        open={openModal}
-        handleClose={handleClose}
-        handleFileUpload={handleFileUpload}
-        handleLinkUpload={{/*handleLinkUpload*/}}
-        handleTextUpload={{/*handleTextUpload*/}}
-      />
+      <UploadDialog open={openModal} />
     </Box>
   );
 }
