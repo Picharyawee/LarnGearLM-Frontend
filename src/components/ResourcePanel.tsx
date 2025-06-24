@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Box, Checkbox, Typography, IconButton } from '@mui/material';
 import Image from "next/image";
 import AddButton from "./common/AddButton";
@@ -111,9 +111,6 @@ export default function ResourcePanel() {
                   <FileItem
                     key={fileProp.id}
                     fileProps={fileProp}
-                    //toggleFileSelection={toggleFileSelection}
-                    onDeleteFile={handleDeleteFile}
-                    onPreviewFile={handlePreviewFile}
                   />
                 ))}
               </Box>

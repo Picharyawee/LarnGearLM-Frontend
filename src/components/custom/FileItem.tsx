@@ -6,14 +6,14 @@ import { useState } from "react";
 
 export default function FileItem({
   fileProps,
-  onDeleteFile,
-  onPreviewFile
 }: {
   fileProps: FileProps;
-  onDeleteFile: (fileId: string) => void;
-  onPreviewFile: (file: FileProps) => void;
 }) {
-  const { toggleFileSelection } = useResourceContext();
+  const {
+    toggleFileSelection,
+    handleDeleteFile,
+    handlePreviewFile
+  } = useResourceContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,14 +25,14 @@ export default function FileItem({
   };
 
   const handleDelete = () => {
-    onDeleteFile(fileProps.id);
+    handleDeleteFile(fileProps.id);
     handleMenuClose();
   };
 
   const handlePreview = () => {
-    onPreviewFile(fileProps);
+    handlePreviewFile(fileProps);
     handleMenuClose();
-  }
+  };
 
   return (
     <Box
