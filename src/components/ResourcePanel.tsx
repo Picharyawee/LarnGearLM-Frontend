@@ -151,6 +151,9 @@ export default function ResourcePanel() {
       ) : (
         <Box
           flexGrow={1}
+          sx={{
+            overflowY: 'scroll'
+          }}
         >
           <Typography 
           variant="subtitle1" 
