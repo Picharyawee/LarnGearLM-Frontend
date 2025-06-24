@@ -1,7 +1,19 @@
 "use client";
 import { useState, useEffect, createContext, useContext } from 'react';
-import { uploadResource, getResources } from "@/lib/api/resource";
+import { uploadResource, getResources, createYoutubeTranscript, deleteResource } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
+
+type FileContentResult =
+  | { type: "text"; content: string }
+  | { type: "pdf"; blobUrl: string };
+
+type PreviewFile = {
+  id: string;
+  filename: string;
+  contentType: "text" | "pdf";
+  content: string;
+  blobUrl?: string;
+};
 
 interface ResourceContextProps {
   openModal: boolean;
@@ -14,6 +26,16 @@ interface ResourceContextProps {
   toggleFileSelection: (id: string) => void;
   toggleSelectAll: () => void;
   getListOfSelectedFileId: () => string[];
+  handleDeleteFile: (fileId: string) => Promise<void>;
+  getFileContentByUrl: (url: string) => Promise<FileContentResult>;
+
+  previewFile: PreviewFile | null;
+  handlePreviewFile: (file: FileProps) => void;
+  handleClickOpen: () => void;
+  handleClose: () => void;
+  setPreviewFile: React.Dispatch<React.SetStateAction<PreviewFile | null>>;
+
+  handleCreateYoutubeTranscript: (url: string) => Promise<void>;
 }
 
 const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
@@ -21,6 +43,7 @@ const ResourceContext = createContext<ResourceContextProps | undefined>(undefine
 export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<FileProps[]>([]);
+  const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,6 +114,75 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  const handleDeleteFile = async (fileId: string) => {
+    try {
+      await deleteResource(fileId); // call backend
+      setUploadedFiles(prev => prev.filter(file => file.id !== fileId)); // update UI
+    } catch (error) {
+      console.error(`Failed to delete file ${fileId}:`, error);
+    }
+  };
+
+  const getFileContentByUrl = async (url: string): Promise<FileContentResult> => {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const contentType = response.headers.get("Content-Type");
+
+      if (contentType?.includes("text/plain")) {
+        const text = await response.text();
+        return { type: "text", content: text };
+      } else if (contentType?.includes("application/pdf")) {
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        return { type: "pdf", blobUrl };
+      } else {
+        throw new Error(`Unsupported content type: ${contentType}`);
+      }
+    } catch (error) {
+      console.error("Error fetching file content:", error);
+      throw error;
+    }
+  };
+
+  const handleClickOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  }
+
+  const handlePreviewFile = async (file: FileProps) => {
+    try {
+      const result = await getFileContentByUrl(file.url);
+      
+      setPreviewFile({
+        id: file.id,
+        filename: file.filename,
+        contentType: result.type,
+        content: result.type === "text" ? result.content : "",
+        blobUrl: result.type === "pdf" ? result.blobUrl : undefined,
+      });
+    } catch (error) {
+      console.error("Failed to preview file", error);
+    }
+  };
+
+  const handleCreateYoutubeTranscript = async (url: string) => {
+    try {
+      await createYoutubeTranscript(url);
+      await fetchResources();
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Failed to create YouTube transcript:", error);
+    }
+  };
+
   return (
     <ResourceContext.Provider value={{
       openModal,
@@ -102,7 +194,15 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       isSelectSome,
       toggleFileSelection,
       toggleSelectAll,
-      getListOfSelectedFileId
+      getListOfSelectedFileId,
+      handleDeleteFile,
+      getFileContentByUrl,
+      handleClickOpen,
+      handleClose,
+      handlePreviewFile,
+      previewFile,
+      setPreviewFile,
+      handleCreateYoutubeTranscript
     }}>
       {children}
     </ResourceContext.Provider>

@@ -1,4 +1,5 @@
-import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button } from "@mui/material";
+import { useState } from "react";
+import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button, TextField } from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close"
 import { useResourceContext } from "@/lib/contexts/ResourceContext";
@@ -6,8 +7,11 @@ import { useResourceContext } from "@/lib/contexts/ResourceContext";
 export default function UploadDialog({open}: {open: boolean}) {
   const { 
     setOpenModal,
-    handleFileUpload
+    handleFileUpload,
+    handleCreateYoutubeTranscript
   } = useResourceContext();
+
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   return (
     <Dialog
@@ -37,8 +41,10 @@ export default function UploadDialog({open}: {open: boolean}) {
       <DialogContent
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          gap: 2,
           minHeight: '60vh'
         }}
       >
@@ -98,19 +104,20 @@ export default function UploadDialog({open}: {open: boolean}) {
           >
             ประเภทไฟล์ที่รองรับ: PDF
           </Typography>
-
-          {/* <input
-                        type="file"
-                        accept="application/pdf"
-                        hidden
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                            setFile(file);
-                            }
-                        }}
-                        /> */}
         </Box>
+
+        <TextField
+          fullWidth
+          placeholder="วาง YouTube Link ที่นี่"
+          value={youtubeUrl}
+          onChange={(e) => setYoutubeUrl(e.target.value)}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+              handleCreateYoutubeTranscript(youtubeUrl);
+              setYoutubeUrl('');
+            }
+          }}
+          />
       </DialogContent>
 
       {/* <DialogActions>
