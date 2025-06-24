@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { giveInstructions } from "../api/resource";
-import { useResource } from "./useResource";
+import { useResourceContext } from "../contexts/ResourceContext";
 
 interface Message {
   id: number;
@@ -21,7 +21,7 @@ interface UseChatReturn {
 }
 
 export const useChat = (): UseChatReturn => {
-  const { getListOfSelectedFileId } = useResource();
+  const { getListOfSelectedFileId } = useResourceContext();
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);

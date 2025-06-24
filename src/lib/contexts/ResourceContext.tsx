@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, createContext, useContext } from 'react';
 import { uploadResource, getResources } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
