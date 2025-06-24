@@ -36,11 +36,17 @@ export default function ResourcePanel() {
       display="flex"
       flexDirection="column"
       flexGrow={1}
-      // width="25%"
-      // m={2}
-      // border={1}
-      // borderRadius={2}
+    // width="25%"
+    // m={2}
+    // border={1}
+    // borderRadius={2}
     >
+      <UploadDialog
+        open={openModal}
+        handleClose={handleClose}
+        handleFileUpload={handleFileUpload}
+      />
+
       <Typography
         variant="h6"
         fontWeight={"bold"}
@@ -123,12 +129,6 @@ export default function ResourcePanel() {
           </Typography>
         </Box>
       )}
-
-      <UploadDialog
-        open={openModal}
-        handleClose={handleClose}
-        handleFileUpload={handleFileUpload}
-      />
     </Box>
   );
 }
