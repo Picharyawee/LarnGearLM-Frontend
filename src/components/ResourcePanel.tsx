@@ -7,7 +7,7 @@ import AddButton from "./common/AddButton";
 import FileItem from "./custom/FileItem";
 import UploadDialog from "./custom/UploadDialog";
 import { FileProps } from "@/lib/types/FileProps";
-import { useResource } from "@/lib/hooks/useResource";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ResourcePanel() {
@@ -15,20 +15,20 @@ export default function ResourcePanel() {
     openModal,
     setOpenModal,
     uploadedFiles,
-    handleFileUpload,
     isSelectAll,
     isSelectSome,
-    toggleFileSelection,
     toggleSelectAll,
-    deleteFileById,
+    handleDeleteFile,
     getFileContentByUrl,
     previewFile,
     handlePreviewFile,
     handleClickOpen,
     handleClose,
     setPreviewFile,
-    handleCreateYoutubeTranscript
-  } = useResource();
+    handleCreateYoutubeTranscript,
+    toggleFileSelection,
+    handleFileUpload
+  } = useResourceContext();
 
   return (
     <Box
@@ -111,8 +111,8 @@ export default function ResourcePanel() {
                   <FileItem
                     key={fileProp.id}
                     fileProps={fileProp}
-                    toggleSelectFile={toggleFileSelection}
-                    onDeleteFile={deleteFileById}
+                    //toggleFileSelection={toggleFileSelection}
+                    onDeleteFile={handleDeleteFile}
                     onPreviewFile={handlePreviewFile}
                   />
                 ))}
@@ -145,9 +145,9 @@ export default function ResourcePanel() {
 
           <UploadDialog
             open={openModal}
-            handleClose={handleClose}
-            handleFileUpload={handleFileUpload}
-            handleCreateYoutubeTranscript={handleCreateYoutubeTranscript}
+            // handleClose={handleClose}
+            // handleFileUpload={handleFileUpload}
+            // handleCreateYoutubeTranscript={handleCreateYoutubeTranscript}
           />
         </>
       ) : (
@@ -188,6 +188,8 @@ export default function ResourcePanel() {
           )}
         </Box>
       )}
+
+      {/* <UploadDialog open={openModal} /> */}
     </Box>
   );
 }

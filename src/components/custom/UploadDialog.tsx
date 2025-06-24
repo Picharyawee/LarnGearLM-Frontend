@@ -1,25 +1,22 @@
+import { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, Box, IconButton, Typography, Button, TextField } from "@mui/material";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close"
-import { useState } from "react";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 
-export default function UploadDialog({
-  open,
-  handleClose,
-  handleFileUpload,
-  handleCreateYoutubeTranscript
-}: {
-  open: boolean;
-  handleClose: () => void;
-  handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleCreateYoutubeTranscript: (url: string) => void;
-}) {
+export default function UploadDialog({open}: {open: boolean}) {
+  const { 
+    setOpenModal,
+    handleFileUpload,
+    handleCreateYoutubeTranscript
+  } = useResourceContext();
+
   const [youtubeUrl, setYoutubeUrl] = useState("");
 
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={() => setOpenModal(false)}
       fullWidth
       maxWidth="md"
     >
@@ -35,7 +32,7 @@ export default function UploadDialog({
         </Typography>
 
         <IconButton
-        onClick={handleClose}
+          onClick={() => setOpenModal(false)}
         >
           <CloseIcon />
         </IconButton>

@@ -1,19 +1,19 @@
 import { Box, Typography, Checkbox, IconButton, Menu, MenuItem } from "@mui/material";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import { FileProps } from "@/lib/types/FileProps";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from "react";
 
 export default function FileItem({
   fileProps,
-  toggleSelectFile,
   onDeleteFile,
   onPreviewFile
 }: {
   fileProps: FileProps;
-  toggleSelectFile: (id: string) => void;
   onDeleteFile: (fileId: string) => void;
   onPreviewFile: (file: FileProps) => void;
 }) {
+  const { toggleFileSelection } = useResourceContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -65,7 +65,7 @@ export default function FileItem({
 
       <Checkbox
         checked={fileProps.isSelected}
-        onChange={() => toggleSelectFile(fileProps.id)}
+        onChange={() => toggleFileSelection(fileProps.id)}
       />
     </Box>
   );
