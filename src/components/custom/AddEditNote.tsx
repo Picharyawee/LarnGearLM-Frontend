@@ -1,31 +1,26 @@
 import React from 'react';
 import { Box, Button, Typography, IconButton, TextField } from '@mui/material';
+import Image from 'next/image';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Note } from "@/lib/hooks/useNotes";
+import { useResourceContext } from '@/lib/contexts/ResourceContext';
+import { useNoteContext } from "@/lib/contexts/NoteContext";
 
-interface AddEditNoteProps {
-  selectedNote: Note | null;
-  newNoteContent: string;
-  newNoteTitle: string;
-  onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onContentChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  onConvertToResource: () => void;
-  onSave: () => void;
-  onCancel: () => void;
-  onDelete: (id: number) => void;
-}
+export default function AddEditNote() {
+  const {
+    selectedNote,
+    noteContentBuffer,
+    noteTitleBuffer,
+    setNoteTitleBuffer,
+    setNoteContentBuffer,
+    handleSaveEditNote,
+    handleCancelAction,
+    handleDeleteNoteByID
+  } = useNoteContext();
 
-export default function AddEditNote({
-  selectedNote,
-  newNoteContent,
-  newNoteTitle,
-  onContentChange,
-  onTitleChange,
-  onConvertToResource,
-  onSave,
-  onCancel,
-  onDelete,
-}: AddEditNoteProps) {
+  const {
+    handleNoteToTextResource
+  } = useResourceContext();
+
   return (
     <Box
       flexGrow={1}
@@ -49,20 +44,20 @@ export default function AddEditNote({
         </Typography> */}
 
         <TextField
-        fullWidth
-        placeholder='ชื่อโน้ต'
-        value={newNoteTitle}
-        //variant='outlined'
-        sx={{
-          '& .MuiOutlinedInput-root': {
-          height: '100%',
-          alignItems: 'flex-start',
-          '& fieldset': { border: 'none' },
-          '&:hover fieldset': { border: 'none' },
-          '&.Mui-focused fieldset': { border: 'none' },
-        }
-        }}
-        onChange={onTitleChange}
+          fullWidth
+          placeholder='ชื่อโน้ต'
+          value={noteTitleBuffer}
+          //variant='outlined'
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: '100%',
+              alignItems: 'flex-start',
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': { border: 'none' },
+            }
+          }}
+          onChange={(e) => setNoteTitleBuffer(e.target.value)}
         />
 
         {selectedNote && (
@@ -71,7 +66,7 @@ export default function AddEditNote({
               width: '24px',
               height: '24px'
             }}
-            onClick={() => onDelete(selectedNote.id)}
+            onClick={() => handleDeleteNoteByID(selectedNote.id)}
           >
             <DeleteIcon />
           </IconButton>
@@ -87,22 +82,22 @@ export default function AddEditNote({
       /> */}
 
       <TextField
-      fullWidth
-      multiline
-      placeholder="เริ่มพิมพ์..."
-      value={newNoteContent}
-      variant="outlined"
-      sx={{
-        flexGrow: 1,
-        '& .MuiOutlinedInput-root': {
-          height: '100%',
-          alignItems: 'flex-start',
-          '& fieldset': { border: 'none' },
-          '&:hover fieldset': { border: 'none' },
-          '&.Mui-focused fieldset': { border: 'none' },
-        }
-      }}
-      onChange={onContentChange}
+        fullWidth
+        multiline
+        placeholder="เริ่มพิมพ์..."
+        value={noteContentBuffer}
+        variant="outlined"
+        sx={{
+          flexGrow: 1,
+          '& .MuiOutlinedInput-root': {
+            height: '100%',
+            alignItems: 'flex-start',
+            '& fieldset': { border: 'none' },
+            '&:hover fieldset': { border: 'none' },
+            '&.Mui-focused fieldset': { border: 'none' },
+          }
+        }}
+        onChange={(e) => setNoteContentBuffer(e.target.value)}
       />
 
       <Box
@@ -113,7 +108,7 @@ export default function AddEditNote({
       >
         <Button
           variant="contained"
-          onClick={onSave}
+          onClick={handleSaveEditNote}
           sx={{
             backgroundColor: '#2d3748',
             borderRadius: '8px',
@@ -129,7 +124,7 @@ export default function AddEditNote({
 
         <Button
           variant="outlined"
-          onClick={onCancel}
+          onClick={handleCancelAction}
           sx={{
             borderRadius: '8px',
             py: 1.5,
@@ -161,9 +156,9 @@ export default function AddEditNote({
           mx: 'auto',
           mb: 2
         }}
-        onClick={onConvertToResource}
+        onClick={() => handleNoteToTextResource(noteTitleBuffer, noteContentBuffer)}
         startIcon={
-          <img
+          <Image
             src='/img/Plus.svg'
             alt='Plus Icon'
             width={24}

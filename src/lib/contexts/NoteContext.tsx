@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { createContext, useState } from "react";
 
 export interface Note {
   id: number;
@@ -6,36 +6,31 @@ export interface Note {
   content: string;
 }
 
-//แต่ละอัน return เป็นอะไรบ้าง
-export interface UseNotesReturn {
+export interface NoteContextProps {
   notes: Note[];
-  newNoteContent: string;
-  noteTitle: string;
+  noteContentBuffer: string;
+  noteTitleBuffer: string;
   isAddingNote: boolean;
   selectedNote: Note | null;
-  
-  setNewNoteContent: (content: string) => void;
-  setNoteTitle: (title: string) => void;
-  handleTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+  setNoteContentBuffer: (content: string) => void;
+  setNoteTitleBuffer: (title: string) => void;
   handleAddNote: () => void;
   handleDeleteNoteByID: (idToDelete: number) => void;
   handleViewNote: (note: Note) => void;
   handleSaveEditNote: () => void;
   handleCancelAction: () => void;
-  
   setIsAddingNote: (isAdding: boolean) => void;
 }
 
-export default function useNotes(initialNotes: Note[] = []): UseNotesReturn {
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
+const NoteContext = createContext<NoteContextProps | undefined>(undefined);
+
+export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [notes, setNotes] = useState<Note[]>([]);
   const [newNoteContent, setNewNoteContent] = useState<string>("");
   const [noteTitle, setNoteTitle] = useState<string>("");
   const [isAddingNote, setIsAddingNote] = useState<boolean>(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNoteTitle(e.target.value);
-  };
 
   const handleAddNote = (): void => {
     if (newNoteContent.trim() !== "") { //ตัดช่องว่างหน้าและหลังข้อความออก แล้วยังมีข้อความ
@@ -66,7 +61,7 @@ export default function useNotes(initialNotes: Note[] = []): UseNotesReturn {
       setNotes(prevNotes =>
         prevNotes.map(note =>
           note.id === selectedNote.id //ถ้าไอดีตรง อัพเดทเนื้อหา
-            ? { ...note, title: noteTitle.trim(), content: newNoteContent.trim() } 
+            ? { ...note, title: noteTitle.trim(), content: newNoteContent.trim() }
             : note
         )
       );
@@ -83,22 +78,33 @@ export default function useNotes(initialNotes: Note[] = []): UseNotesReturn {
     setNewNoteContent("");
   };
 
-  return {
-    notes,
-    newNoteContent,
-    noteTitle,
-    isAddingNote,
-    selectedNote,
-    
-    setNewNoteContent,
-    setNoteTitle,
-    handleTitleChange,
-    handleAddNote,
-    handleDeleteNoteByID,
-    handleViewNote,
-    handleSaveEditNote,
-    handleCancelAction,
-    
-    setIsAddingNote,
-  };
-}
+  return (
+    <NoteContext.Provider
+      value={{
+        notes,
+        noteContentBuffer: newNoteContent,
+        noteTitleBuffer: noteTitle,
+        isAddingNote,
+        selectedNote,
+        setNoteContentBuffer: setNewNoteContent,
+        setNoteTitleBuffer: setNoteTitle,
+        handleAddNote,
+        handleDeleteNoteByID,
+        handleViewNote,
+        handleSaveEditNote,
+        handleCancelAction,
+        setIsAddingNote,
+      }}
+    >
+      {children}
+    </NoteContext.Provider>
+  );
+};
+
+export const useNoteContext = (): NoteContextProps => {
+  const context = React.useContext(NoteContext);
+  if (!context) {
+    throw new Error("useNoteContext must be used within a NoteProvider");
+  }
+  return context;
+};

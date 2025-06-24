@@ -1,14 +1,10 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { Note } from "@/lib/hooks/useNotes";
+import Image from 'next/image';
+import { useNoteContext } from '@/lib/contexts/NoteContext';
 
-interface NoteListProps {
-  notes: Note[];
-  onAddNoteClick: () => void;
-  onSelectNote: (note: Note) => void;
-}
-
-export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteListProps) {
+export default function NoteList() {
+  const { notes, setIsAddingNote, handleViewNote } = useNoteContext();
   return (
     <Box 
     px={2}
@@ -27,9 +23,9 @@ export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteLi
           py: 1.5,
           mb: 2
         }}
-        onClick={onAddNoteClick}
+        onClick={() => setIsAddingNote(true)}
         startIcon={
-          <img
+          <Image
             src='/img/Plus.svg'
             alt='Plus Icon'
             width={24}
@@ -52,7 +48,7 @@ export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteLi
           textAlign='center'
           color='text.secondary'
         >
-          <img
+          <Image
             src='/img/NoteBook.svg'
             alt='Notebook Icon'
             width={80}
@@ -83,9 +79,9 @@ export default function NoteList({ notes, onAddNoteClick, onSelectNote }: NoteLi
                 borderRadius: '4px',
                 mb: 0.1
               }}
-              onClick={() => onSelectNote(note)}
+              onClick={() => handleViewNote(note)}
             >
-              <img
+              <Image
                 src='/img/NoteBook.svg'
                 alt='Notebook Icon'
                 width={24}
