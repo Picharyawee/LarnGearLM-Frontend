@@ -8,10 +8,14 @@ export default function UploadDialog({open}: {open: boolean}) {
   const { 
     setOpenModal,
     handleFileUpload,
-    handleCreateYoutubeTranscript
+    handleCreateYoutubeTranscript,
+    handleCreateWebsiteText,
+    handleTextUpload
   } = useResourceContext();
 
   const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [url, setUrl] = useState("");
+  const [text, setText] = useState("");
 
   return (
     <Dialog
@@ -107,6 +111,26 @@ export default function UploadDialog({open}: {open: boolean}) {
         </Box>
 
         <TextField
+        fullWidth
+        placeholder="วางข้อความที่นี่"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if(e.key === 'Enter'){
+            handleTextUpload(text);
+            setText('');
+          }
+        }}
+        />
+
+        <Box
+        display={'flex'}
+        sx={{
+          width: '100%'
+        }}
+        gap={2}
+        >
+          <TextField
           fullWidth
           placeholder="วาง YouTube Link ที่นี่"
           value={youtubeUrl}
@@ -118,6 +142,20 @@ export default function UploadDialog({open}: {open: boolean}) {
             }
           }}
           />
+
+          <TextField
+          fullWidth
+          placeholder="วาง Website Link ที่นี่"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => {
+            if(e.key === 'Enter'){
+              handleCreateWebsiteText(url);
+              setUrl('');
+            }
+          }}
+          />
+        </Box>
       </DialogContent>
 
       {/* <DialogActions>

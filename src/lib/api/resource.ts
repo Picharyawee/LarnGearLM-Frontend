@@ -16,6 +16,14 @@ export async function createYoutubeTranscript(videoUrl: string) {
   });
 }
 
+export async function createWebsiteText(url: string) {
+  return api.post('/resources/website-text/', null, {
+    params: { 
+      url: url 
+    },
+  });
+}
+
 export async function getResources() {
   return api.get('/resources/');
 }

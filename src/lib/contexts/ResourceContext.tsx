@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, createContext, useContext } from 'react';
-import { uploadResource, getResources, createYoutubeTranscript, deleteResource } from "@/lib/api/resource";
+import { uploadResource, getResources, createYoutubeTranscript, createWebsiteText, deleteResource } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
 
 type FileContentResult =
@@ -36,6 +36,8 @@ interface ResourceContextProps {
   setPreviewFile: React.Dispatch<React.SetStateAction<PreviewFile | null>>;
 
   handleCreateYoutubeTranscript: (url: string) => Promise<void>;
+  handleCreateWebsiteText: (url: string) => Promise<void>;
+  handleTextUpload: (content: string) => Promise<void>;
 }
 
 const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
@@ -173,6 +175,24 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
+  const handleTextUpload = async (content: string) => {
+    try {
+      const formData = new FormData();
+      const safeTitle = content.trim().slice(0, 20).replace(/[\\/:*?"<>|]/g, "") || "Untitled";
+      const blob = new Blob([content], { type: "text/plain" });
+      const file = new File([blob], `${safeTitle}.txt`, { type: "text/plain" });
+
+      formData.append("uploaded_file", file);
+
+      await uploadResource(formData);
+      await fetchResources();
+
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Error uploading text as resource:", error);
+    }
+  };
+
   const handleCreateYoutubeTranscript = async (url: string) => {
     try {
       await createYoutubeTranscript(url);
@@ -180,6 +200,16 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setOpenModal(false);
     } catch (error) {
       console.error("Failed to create YouTube transcript:", error);
+    }
+  };
+
+  const handleCreateWebsiteText = async (url: string) => {
+    try {
+      await createWebsiteText(url);
+      await fetchResources();
+      setOpenModal(false);
+    } catch (error) {
+      console.error("Failed to create Website Text:", error);
     }
   };
 
@@ -202,7 +232,9 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       handlePreviewFile,
       previewFile,
       setPreviewFile,
-      handleCreateYoutubeTranscript
+      handleCreateYoutubeTranscript,
+      handleCreateWebsiteText,
+      handleTextUpload
     }}>
       {children}
     </ResourceContext.Provider>
