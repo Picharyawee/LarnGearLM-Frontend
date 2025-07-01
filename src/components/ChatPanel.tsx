@@ -9,6 +9,7 @@ export default function ChatPanel() {
   const {
     currentMessage,
     messages,
+    responseBufferMessage,
     isLoading,
     handleMessageChange,
     handleSendMessage,
@@ -150,8 +151,8 @@ export default function ChatPanel() {
           }}
           >
             <CircularProgress size={24} sx={{color: '#2d3748'}}/>
-            <Typography variant="body2" color="text.secondary" sx={{ml: 1}}>
-                กำลังประมวลผล...
+            <Typography variant="body2" color="text.primary" sx={{ml: 1}}>
+                {responseBufferMessage || "กำลังประมวลผล..."}
             </Typography>
           </Box>
         )}
