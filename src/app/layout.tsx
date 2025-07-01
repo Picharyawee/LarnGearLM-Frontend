@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ResourceProvider } from "@/lib/contexts/ResourceContext";
 import { NoteProvider } from "@/lib/contexts/NoteContext";
+import { ChatProvider } from "@/lib/contexts/ChatContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +28,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ResourceProvider>
-        <NoteProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            {children}
-          </body>
-        </NoteProvider>
-      </ResourceProvider>
+      <AppRouterCacheProvider>
+        <ResourceProvider>
+          <NoteProvider>
+            <ChatProvider>
+              <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+              >
+                {children}
+              </body>
+            </ChatProvider>
+          </NoteProvider>
+        </ResourceProvider>
+      </AppRouterCacheProvider>
     </html>
   );
 }

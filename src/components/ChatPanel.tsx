@@ -3,7 +3,7 @@
 import React from "react";
 import { Box , TextField , Typography , IconButton , CircularProgress } from "@mui/material";
 import Image from "next/image";
-import { useChat } from "@/lib/hooks/useChat";
+import { useChatContext } from "@/lib/contexts/ChatContext";
 
 export default function ChatPanel() {
   const {
@@ -13,7 +13,7 @@ export default function ChatPanel() {
     handleMessageChange,
     handleSendMessage,
     handleKeyPress,
-  } = useChat();
+  } = useChatContext();
 
   return (
     <Box
