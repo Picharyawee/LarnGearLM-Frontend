@@ -17,6 +17,7 @@ export interface NoteContextProps {
   setNoteContentBuffer: (content: string) => void;
   setNoteTitleBuffer: (title: string) => void;
   handleAddNote: () => void;
+  handleAddNoteDirect: (title: string, content: string) => void;
   handleDeleteNoteByID: (idToDelete: number) => void;
   handleViewNote: (note: Note) => void;
   handleSaveEditNote: () => void;
@@ -41,6 +42,18 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         content: newNoteContent.trim()
       };
       setNotes(prevNotes => [...prevNotes, newNote]); //เอาโน้ตที่เพิ่งสร้างมาต่อท้ายโน้ตก่อนหน้า
+      handleCancelAction();
+    }
+  };
+
+  const handleAddNoteDirect = (title: string, content: string): void => {
+    if (content.trim() !== "") {
+      const newNote: Note = {
+        id: Date.now(),
+        title: title.trim(),
+        content: content.trim()
+      };
+      setNotes(prevNotes => [...prevNotes, newNote]);
       handleCancelAction();
     }
   };
@@ -90,6 +103,7 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setNoteContentBuffer: setNewNoteContent,
         setNoteTitleBuffer: setNoteTitle,
         handleAddNote,
+        handleAddNoteDirect,
         handleDeleteNoteByID,
         handleViewNote,
         handleSaveEditNote,
