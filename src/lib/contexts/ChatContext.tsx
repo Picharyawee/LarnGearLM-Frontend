@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { giveInstructions } from "../api/resource";
+"use client";
+
+import { useState, createContext, useContext } from "react";
+import { giveInstructions } from "../api/chat";
 import { useResourceContext } from "../contexts/ResourceContext";
 
 interface Message {
@@ -10,7 +12,7 @@ interface Message {
   //timestamp: string;
 }
 
-interface UseChatReturn {
+interface ChatContextProps {
   currentMessage: string;
   messages: Message[];
   isLoading: boolean;
@@ -18,12 +20,17 @@ interface UseChatReturn {
   handleSendMessage: () => Promise<void>;
   handleKeyPress: (event: React.KeyboardEvent<HTMLElement>) => void;
   setCurrentMessage: React.Dispatch<React.SetStateAction<string>>;
+  responseBufferMessage: string;
+  setResponseBufferMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const useChat = (): UseChatReturn => {
+const ChatContext = createContext<ChatContextProps | undefined>(undefined);
+
+export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { getListOfSelectedFileId } = useResourceContext();
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [responseBufferMessage, setResponseBufferMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // // Ref สำหรับการเลื่อน scroll ไปยังข้อความล่าสุด
@@ -44,7 +51,7 @@ export const useChat = (): UseChatReturn => {
   };
 
   const handleSendMessage = async (): Promise<void> => {
-    if(currentMessage.trim() === ""){
+    if (currentMessage.trim() === "") {
       return;
     }
 
@@ -54,20 +61,38 @@ export const useChat = (): UseChatReturn => {
     setCurrentMessage("");
     setIsLoading(true);
 
-    try{
-      const response = await giveInstructions(userMessage, getListOfSelectedFileId());
+    try {
+      const listOfSelectedFileId = getListOfSelectedFileId();
+      const response = await giveInstructions(userMessage, listOfSelectedFileId, true);
 
       let aiResponseText = "ไม่พบการตอบกลับจาก AI";
 
-      if (response.data) {
-        aiResponseText = response.data.response
+      let accumulateBufferMessage = "";
+      if (response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+
+        async function readStream(): Promise<void> {
+          const { done, value } = await reader.read();
+          if (done) {
+            return;
+          }
+          const chunk = decoder.decode(value, { stream: true });
+          const text = JSON.parse(chunk).response;
+          accumulateBufferMessage += text;
+          setResponseBufferMessage(accumulateBufferMessage);
+          return readStream();
+        }
+        await readStream();
       }
+      aiResponseText = accumulateBufferMessage || "ไม่พบการตอบกลับจาก AI";
+      setResponseBufferMessage(""); // Clear the buffer message after response is complete
 
       setMessages((prevMessages) => [
         ...prevMessages,
         { id: Date.now() + 1, sender: "AI", text: aiResponseText, type: "ai" },
       ]);
-    } catch (error: unknown){
+    } catch (error: unknown) {
       console.error("Error sending message or getting AI response:", error);
 
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
@@ -82,19 +107,31 @@ export const useChat = (): UseChatReturn => {
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLElement>): void => {
-    if(event.key === "Enter" && !event.shiftKey){
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSendMessage();
     }
   };
-
-  return {
-    currentMessage,
-    messages,
-    isLoading,
-    handleMessageChange,
-    handleSendMessage,
-    handleKeyPress,
-    setCurrentMessage
-  };
+  return (
+    <ChatContext.Provider value={{
+      currentMessage,
+      messages,
+      isLoading,
+      handleMessageChange,
+      handleSendMessage,
+      handleKeyPress,
+      setCurrentMessage,
+      responseBufferMessage,
+      setResponseBufferMessage
+    }}>
+      {children}
+    </ChatContext.Provider>
+  );
+};
+export const useChatContext = (): ChatContextProps => {
+  const context = useContext(ChatContext);
+  if (!context) {
+    throw new Error("useChatContext must be used within a ChatProvider");
+  }
+  return context;
 };
