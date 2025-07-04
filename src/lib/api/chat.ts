@@ -1,4 +1,4 @@
-
+import api from './axios';
 /**
  * 2 July 2025
  * The axios can't handle streaming response, so we use fetch instead.
@@ -15,4 +15,10 @@ export async function giveInstructions(instruction: string, selected_files: stri
     },
     body: JSON.stringify(selected_files),
   });
+}
+
+export async function createArticle() {
+  const res = await api.post('/generate/article/');
+  
+  return res.data;
 }

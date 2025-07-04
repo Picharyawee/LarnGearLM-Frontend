@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createContext, useContext } from "react";
-import { giveInstructions } from "../api/chat";
+import { giveInstructions, createArticle } from "../api/chat";
 import { useResourceContext } from "../contexts/ResourceContext";
 
 interface Message {
@@ -22,6 +22,7 @@ interface ChatContextProps {
   setCurrentMessage: React.Dispatch<React.SetStateAction<string>>;
   responseBufferMessage: string;
   setResponseBufferMessage: React.Dispatch<React.SetStateAction<string>>;
+  handleGenerateArticle: () => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -32,19 +33,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [messages, setMessages] = useState<Message[]>([]);
   const [responseBufferMessage, setResponseBufferMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // // Ref สำหรับการเลื่อน scroll ไปยังข้อความล่าสุด
-  // const messagesEndRef = useRef(null);
-
-  // // ฟังก์ชันสำหรับการเลื่อน scroll ลงไปด้านล่างสุด
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-  // };
-
-  // // เมื่อ messages มีการเปลี่ยนแปลง ให้เลื่อน scroll ลง
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
 
   const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setCurrentMessage(event.target.value);
@@ -112,6 +100,41 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       handleSendMessage();
     }
   };
+
+  const handleGenerateArticle = async (): Promise<void> => {
+    setIsLoading(true);
+
+    try {
+      const article = await createArticle();
+      // สมมุติว่าอยากโชว์เป็น message ใน chat เลย
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "AI",
+          type: "ai",
+          text: `Title : ${article.title}\n\nContent : ${article.content}`,
+          actions: [
+            { label: "ใช้บทความนี้", action: "accept" },
+          ],
+        },
+      ]);
+    } catch (error) {
+      console.error("Error generating article:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          sender: "System",
+          type: "error",
+          text: `เกิดข้อผิดพลาด: ${error instanceof Error ? error.message : "Unknown error"}`,
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ChatContext.Provider value={{
       currentMessage,
@@ -122,7 +145,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       handleKeyPress,
       setCurrentMessage,
       responseBufferMessage,
-      setResponseBufferMessage
+      setResponseBufferMessage,
+      handleGenerateArticle,
     }}>
       {children}
     </ChatContext.Provider>
