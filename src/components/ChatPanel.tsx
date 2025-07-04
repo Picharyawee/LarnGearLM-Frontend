@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import { Box , TextField , Typography , IconButton , CircularProgress } from "@mui/material";
+import { Box , TextField , Typography , IconButton , CircularProgress , Button } from "@mui/material";
 import Image from "next/image";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
+import { useNoteContext } from "@/lib/contexts/NoteContext";
 import { useChatContext } from "@/lib/contexts/ChatContext";
 
 export default function ChatPanel() {
@@ -15,6 +17,17 @@ export default function ChatPanel() {
     handleSendMessage,
     handleKeyPress,
   } = useChatContext();
+
+  const {
+    handleNoteToTextResource
+  } = useResourceContext();
+
+  const {
+    setNoteTitleBuffer,
+    setNoteContentBuffer,
+    handleAddNote,
+    handleAddNoteDirect
+  } = useNoteContext();
 
   return (
     <Box
@@ -93,50 +106,77 @@ export default function ChatPanel() {
           </Box>
         ) : (
           messages.map((msg) => (
-            <Box
-            key={msg.id}
-            sx={{
-              alignSelf: msg.type === "user" ? "flex-end" : "flex-start",
-              borderRadius: '24px',
-              py: 1.5,
-              px: 2,
-              mb: 1,
-              maxWidth: '70%',
-              wordBreak: 'break-word',
-              ...(msg.type === "user" && {
-                  backgroundColor: '#2d3748', 
-              }),
-              ...(msg.type === "ai" && {
-                  backgroundColor: 'white', 
-                  border: 1
-              }),
-              ...(msg.type === "error" && {
-                  backgroundColor: '#ffebee', 
-              }),
-            }}
-            >
-              {/* <Typography variant="body2" fontWeight="bold" color="white"
-              >
-                {msg.sender}:
-              </Typography> */}
-
-              <Typography 
-              variant="body1"
+            <>
+              <Box
+              key={msg.id}
               sx={{
+                alignSelf: msg.type === "user" ? "flex-end" : "flex-start",
+                borderRadius: '24px',
+                py: 1.5,
+                px: 2,
+                mb: 1,
+                maxWidth: '70%',
+                wordBreak: 'break-word',
+                ...(msg.type === "user" && {
+                    backgroundColor: '#2d3748', 
+                }),
                 ...(msg.type === "ai" && {
-                  color: '#2d3748',
+                    backgroundColor: 'white', 
+                    border: 1
                 }),
                 ...(msg.type === "error" && {
-                  color: '#d32f2f',
-                }),
-                ...(msg.type === "user" && {
-                  color: 'white', 
+                    backgroundColor: '#ffebee', 
                 }),
               }}
               >
-                {msg.text}
-              </Typography>
-            </Box>
+                {/* <Typography variant="body2" fontWeight="bold" color="white"
+                >
+                  {msg.sender}:
+                </Typography> */}
+
+                <Typography 
+                variant="body1"
+                sx={{
+                  ...(msg.type === "ai" && {
+                    color: '#2d3748',
+                  }),
+                  ...(msg.type === "error" && {
+                    color: '#d32f2f',
+                  }),
+                  ...(msg.type === "user" && {
+                    color: 'white', 
+                  }),
+                }}
+                >
+                  {msg.text}
+                </Typography>
+              </Box>
+
+              {msg.type === "ai" && (
+                //<Box mt={1}>
+                  <Button
+                    key={`${msg.id}-button`} // ให้ key ไม่ซ้ำ
+                    size="small"
+                    sx={{
+                      px: 2,
+                      alignSelf:"flex-start",
+                      // border: 1,
+                      // borderRadius: 2,
+                      //backgroundColor: 'lightblue',
+                      //color: 'gray'
+                    }}
+                    onClick={() => {
+                      const title = msg.text.slice(0, 10); // ตัด 10 ตัวอักษรแรก
+                      const content = msg.text;
+                      
+                      handleAddNoteDirect(title, content);
+                    }}
+                  >
+                    บันทึกลงในโน้ต
+                  </Button>
+                //</Box>
+              )}
+            </>
           ))
         )}
 
