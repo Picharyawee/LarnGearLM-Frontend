@@ -3,19 +3,20 @@
 import React from "react";
 import { Box , TextField , Typography , IconButton , CircularProgress , Button } from "@mui/material";
 import Image from "next/image";
-import { useChat } from "@/lib/hooks/useChat";
 import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import { useNoteContext } from "@/lib/contexts/NoteContext";
+import { useChatContext } from "@/lib/contexts/ChatContext";
 
 export default function ChatPanel() {
   const {
     currentMessage,
     messages,
+    responseBufferMessage,
     isLoading,
     handleMessageChange,
     handleSendMessage,
     handleKeyPress,
-  } = useChat();
+  } = useChatContext();
 
   const {
     handleNoteToTextResource
@@ -190,8 +191,8 @@ export default function ChatPanel() {
           }}
           >
             <CircularProgress size={24} sx={{color: '#2d3748'}}/>
-            <Typography variant="body2" color="text.secondary" sx={{ml: 1}}>
-                กำลังประมวลผล...
+            <Typography variant="body2" color="text.primary" sx={{ml: 1}}>
+                {responseBufferMessage || "กำลังประมวลผล..."}
             </Typography>
           </Box>
         )}
