@@ -4,6 +4,8 @@ interface ArticleDialogProps {
     open: boolean;
     article: {
         title: string;
+        tags: string;
+        expectedDuration: string;
         content: string;
     }
     onClose: () => void;
@@ -24,6 +26,8 @@ export default function ArticleDialog({ open, article, onClose, onConfirm }: Art
 
             <DialogContent dividers>
                 <Typography whiteSpace="pre-line">
+                    Tag : {article.tags} {"\n"}
+                    Expected Duration : {article.expectedDuration} {"\n\n"}
                     {article.content}
                 </Typography>
             </DialogContent>

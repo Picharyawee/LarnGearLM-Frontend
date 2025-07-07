@@ -113,7 +113,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: Date.now(),
           sender: "AI",
           type: "ai",
-          text: `Title : ${article.title}\n\nContent : ${article.content}`,
+          text: `Title : ${article.title}\n\nTags : ${article.tags}\n\nExpected duration : ${article.expectedDuration}\n\nContent : ${article.content}`,
           actions: [
             { label: "ใช้บทความนี้", action: "accept" },
           ],
