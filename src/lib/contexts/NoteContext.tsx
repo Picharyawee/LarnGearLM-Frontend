@@ -1,5 +1,7 @@
 "use client";
-import React, { createContext, useState } from "react";
+
+import React, { createContext, useState, useEffect } from "react";
+import { fetchNotes, uploadNote, updateNote, deleteNote, NoteAPIResponse } from "../api/note";
 
 export interface Note {
   id: number;
@@ -34,33 +36,67 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAddingNote, setIsAddingNote] = useState<boolean>(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
-  const handleAddNote = (): void => {
-    if (newNoteContent.trim() !== "") { //ตัดช่องว่างหน้าและหลังข้อความออก แล้วยังมีข้อความ
-      const newNote: Note = {
-        id: Date.now(),
-        title: noteTitle.trim(),
-        content: newNoteContent.trim()
-      };
-      setNotes(prevNotes => [...prevNotes, newNote]); //เอาโน้ตที่เพิ่งสร้างมาต่อท้ายโน้ตก่อนหน้า
-      handleCancelAction();
+  const reloadNotes = async () => {
+    try{
+      const notesAPI = await fetchNotes();
+      const noteList = await Promise.all(
+        notesAPI.map(async (note: NoteAPIResponse) => {
+          const response = await fetch(note.url);
+          const content = await response.text();
+
+          return{
+            id: note.id,
+            title: note.title,
+            content,
+          };
+        })
+      );
+
+      setNotes(noteList);
+    }catch(error){
+      console.error("reloadNotes error", error);
     }
   };
 
-  const handleAddNoteDirect = (title: string, content: string): void => {
-    if (content.trim() !== "") {
-      const newNote: Note = {
-        id: Date.now(),
-        title: title.trim(),
-        content: content.trim()
-      };
-      setNotes(prevNotes => [...prevNotes, newNote]);
-      handleCancelAction();
+  useEffect(() => {
+    reloadNotes();
+  }, []);
+
+  const handleAddNote = async () => {
+    if (noteTitle.trim() && newNoteContent.trim()) { //ตัดช่องว่างหน้าและหลังข้อความออก แล้วยังมีข้อความ
+      try{
+        await uploadNote(noteTitle.trim(), newNoteContent.trim());
+        await reloadNotes();
+
+        handleCancelAction();
+      }catch(error){
+        console.error("addNote error", error);
+      } 
     }
   };
 
-  const handleDeleteNoteByID = (idToDelete: number): void => {
-    setNotes(prevNotes => prevNotes.filter(note => note.id !== idToDelete)); //ลบโน้ตที่มีไอดีตรงกับที่ต้องการลบ
-    handleCancelAction();
+  const handleAddNoteDirect = async (title: string, content: string) => {
+    if (title.trim() && content.trim()) { //ตัดช่องว่างหน้าและหลังข้อความออก แล้วยังมีข้อความ
+      try{
+        await uploadNote(title.trim(), content.trim());
+        await reloadNotes();
+
+        handleCancelAction();
+      }catch(error){
+        console.error("addNote error", error);
+      } 
+    }
+  };
+
+  const handleDeleteNoteByID = async (idToDelete: number) => {
+    try {
+      await deleteNote(idToDelete);
+      await reloadNotes();
+
+      handleCancelAction();
+    } catch (error) {
+      console.error("deleteNote error", error);
+    }
   };
 
   const handleViewNote = (note: Note): void => {
@@ -70,17 +106,17 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAddingNote(true);
   };
 
-  const handleSaveEditNote = (): void => {
-    if (selectedNote && (noteTitle.trim() !== "" || newNoteContent.trim() !== "")) {
-      setNotes(prevNotes =>
-        prevNotes.map(note =>
-          note.id === selectedNote.id //ถ้าไอดีตรง อัพเดทเนื้อหา
-            ? { ...note, title: noteTitle.trim(), content: newNoteContent.trim() }
-            : note
-        )
-      );
-      handleCancelAction();
-    } else if (selectedNote === null && (noteTitle.trim() !== "" || newNoteContent.trim() !== "")) { //ถ้าไม่โน้ตที่ถูกเลือก จะสร้างโน้ตใหม่
+  const handleSaveEditNote = async () => {
+    if (selectedNote) {
+      try{
+        await updateNote(selectedNote.id, noteTitle.trim(), newNoteContent.trim());
+        await reloadNotes();
+
+        handleCancelAction();
+      }catch(error){
+        console.error("updateNote error", error);
+      } 
+    }else{
       handleAddNote();
     }
   };
