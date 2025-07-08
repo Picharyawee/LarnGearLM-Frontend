@@ -5,7 +5,7 @@ interface ArticleDialogProps {
     article: {
         title: string;
         tags: string;
-        expectedDuration: string;
+        expectedDuration: number;
         content: string;
     }
     onClose: () => void;

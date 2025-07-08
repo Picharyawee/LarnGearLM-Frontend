@@ -43,18 +43,18 @@ export default function ChatPanel() {
   };
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<{title:string,tags:string,expectedDuration:string,content:string}>({title: "",tags: "",expectedDuration: "",content: ""});
+  const [selectedArticle, setSelectedArticle] = useState<{title:string,tags:string,expectedDuration:number,content:string}>({title: "",tags: "",expectedDuration: 0,content: ""});
 
   const handleOpenDialog = (text: string) => {
     const titleMatch = text.match(/Title\s*:\s*(.*)/);
     const tagsMatch = text.match(/Tags\s*:\s*(.*)/);
-    const durationMatch = text.match(/expextedDuration\s*:\s*(.*)/);
+    const durationMatch = text.match(/Expected\s*duration\s*:\s*(\d+)/);
     const contentMatch = text.match(/Content\s*:\s*([\s\S]*)/);
 
     setSelectedArticle({
       title: titleMatch ? titleMatch[1].trim() : "ไม่ระบุ",
       tags: tagsMatch ? tagsMatch[1].trim() : "ไม่ระบุ",
-      expectedDuration: durationMatch ? durationMatch[1].trim() : "ไม่ระบุ",
+      expectedDuration: durationMatch ? parseInt(durationMatch[1]) : 0,
       content: contentMatch ? contentMatch[1].trim() : "ไม่ระบุ",
     });
 
