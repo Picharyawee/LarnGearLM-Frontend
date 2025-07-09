@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Box , TextField , Typography , IconButton , CircularProgress , Button } from "@mui/material";
 import Image from "next/image";
 import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import { useNoteContext } from "@/lib/contexts/NoteContext";
 import { useChatContext } from "@/lib/contexts/ChatContext";
+import ArticleDialog from "./custom/ArticleDialog";
 
 export default function ChatPanel() {
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const {
     currentMessage,
     messages,
@@ -16,6 +19,7 @@ export default function ChatPanel() {
     handleMessageChange,
     handleSendMessage,
     handleKeyPress,
+    handleGenerateArticle,
   } = useChatContext();
 
   const {
@@ -29,6 +33,41 @@ export default function ChatPanel() {
     handleAddNoteDirect
   } = useNoteContext();
 
+  const handleClickGenerateArticle = async () => {
+    setIsGenerating(true);
+    try {
+      await handleGenerateArticle();
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState<{title:string,tags:string,expectedDuration:number,content:string}>({title: "",tags: "",expectedDuration: 0,content: ""});
+
+  const handleOpenDialog = (text: string) => {
+    const titleMatch = text.match(/Title\s*:\s*(.*)/);
+    const tagsMatch = text.match(/Tags\s*:\s*(.*)/);
+    const durationMatch = text.match(/Expected\s*duration\s*:\s*(\d+)/);
+    const contentMatch = text.match(/Content\s*:\s*([\s\S]*)/);
+
+    setSelectedArticle({
+      title: titleMatch ? titleMatch[1].trim() : "ไม่ระบุ",
+      tags: tagsMatch ? tagsMatch[1].trim() : "ไม่ระบุ",
+      expectedDuration: durationMatch ? parseInt(durationMatch[1]) : 0,
+      content: contentMatch ? contentMatch[1].trim() : "ไม่ระบุ",
+    });
+
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => setOpenDialog(false);
+
+  const handleConfirm = () => {
+    console.log("Confirmed using article", selectedArticle);
+    setOpenDialog(false);
+  };
+
   return (
     <Box
       display="flex"
@@ -41,15 +80,30 @@ export default function ChatPanel() {
       //height={'100%'}
       flexGrow={1}
     >
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        borderBottom={1}
-        p={2}
-        mb={1}
+      <Box
+      display={'flex'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
+      borderBottom={1}
+      p={2}
+      mb={1}
       >
-        แชท
-      </Typography>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+        >
+          แชท
+        </Typography>
+
+        <Button
+        onClick={handleClickGenerateArticle}
+        sx={{
+          p: 0
+        }}
+        >
+          สร้างบทความ
+        </Button>
+      </Box>
       
       <Box
       display={'flex'}
@@ -62,7 +116,7 @@ export default function ChatPanel() {
         overflowY:'auto'
       }}
       >
-        {messages.length === 0 ? (
+        {messages.length === 0 && !isGenerating ? (
           <Box
           display={"flex"}
           flexDirection={"column"}
@@ -129,11 +183,6 @@ export default function ChatPanel() {
                 }),
               }}
               >
-                {/* <Typography variant="body2" fontWeight="bold" color="white"
-                >
-                  {msg.sender}:
-                </Typography> */}
-
                 <Typography 
                 variant="body1"
                 sx={{
@@ -152,18 +201,16 @@ export default function ChatPanel() {
                 </Typography>
               </Box>
 
-              {msg.type === "ai" && (
-                //<Box mt={1}>
+              <Box
+              display={'flex'}
+              gap={1}
+              >
+                {msg.type === "ai" && (
                   <Button
                     key={`${msg.id}-button`} // ให้ key ไม่ซ้ำ
                     size="small"
                     sx={{
-                      px: 2,
                       alignSelf:"flex-start",
-                      // border: 1,
-                      // borderRadius: 2,
-                      //backgroundColor: 'lightblue',
-                      //color: 'gray'
                     }}
                     onClick={() => {
                       const title = msg.text.slice(0, 10); // ตัด 10 ตัวอักษรแรก
@@ -174,11 +221,30 @@ export default function ChatPanel() {
                   >
                     บันทึกลงในโน้ต
                   </Button>
-                //</Box>
-              )}
+                )}
+                
+                {msg.type === "ai" && msg.text.startsWith("Title :") && 
+                  <Button
+                  size="small"
+                  sx={{
+                    alignSelf:"flex-start",
+                  }}
+                  onClick={() => handleOpenDialog(msg.text)}
+                  >
+                    ใช้บทความนี้
+                  </Button>
+                }
+              </Box>
             </>
           ))
         )}
+
+        <ArticleDialog
+          open={openDialog}
+          article={selectedArticle}
+          onClose={handleCloseDialog}
+          onConfirm={handleConfirm}
+        />
 
         {isLoading && ( //แสดง CircularProgress เมื่อกำลังโหลด
           <Box 

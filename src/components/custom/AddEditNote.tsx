@@ -27,6 +27,9 @@ export default function AddEditNote() {
       display={'flex'}
       flexDirection={'column'}
       px={2}
+      sx={{
+        overflowY: 'scroll'
+      }}
     >
       <Box
         display={'flex'}
@@ -47,6 +50,7 @@ export default function AddEditNote() {
           fullWidth
           placeholder='ชื่อโน้ต'
           value={noteTitleBuffer}
+          inputProps={{ maxLength: 20 }}
           //variant='outlined'
           sx={{
             '& .MuiOutlinedInput-root': {
