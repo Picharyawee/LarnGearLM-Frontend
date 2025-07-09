@@ -97,7 +97,8 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   async function fetchAccessToken() {
-    const response = await login('support@local.com', '1234');
+    const response = await login('support@larngeartech.com', 'Larngear@123456');
+    // const response = await login('support@local.com', '1234');
     const token = response.data.accessToken;
     localStorage.setItem('accessToken', token);
   }
