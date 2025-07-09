@@ -27,6 +27,9 @@ export default function AddEditNote() {
       display={'flex'}
       flexDirection={'column'}
       px={2}
+      sx={{
+        overflowY: 'scroll'
+      }}
     >
       <Box
         display={'flex'}
