@@ -105,7 +105,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
 
     try {
-      const article = await createArticle();
+      const listOfSelectedFileId = getListOfSelectedFileId();
+      const article = await createArticle(listOfSelectedFileId);
       // สมมุติว่าอยากโชว์เป็น message ใน chat เลย
       setMessages((prev) => [
         ...prev,
