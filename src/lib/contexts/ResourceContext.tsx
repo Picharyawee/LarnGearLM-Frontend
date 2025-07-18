@@ -2,7 +2,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { uploadResource, getResources, createYoutubeTranscript, createWebsiteText, deleteResource } from "@/lib/api/resource";
 import { FileProps } from "@/lib/types/FileProps";
-import { login } from '../api/auth';
 
 type FileContentResult =
   | { type: "text"; content: string }
@@ -96,16 +95,8 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  async function fetchAccessToken() {
-    const response = await login('support@larngeartech.com', 'Larngear@123456');
-    // const response = await login('support@local.com', '1234');
-    const token = response.data.accessToken;
-    localStorage.setItem('accessToken', token);
-  }
-
   useEffect(() => {
     fetchResources();
-    fetchAccessToken();
   }, []);
 
   const handleNoteToTextResource = async (title: string, content: string) => {
@@ -171,7 +162,7 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const handlePreviewFile = async (file: FileProps) => {
     try {
       const result = await getFileContentByUrl(file.url);
-
+      
       setPreviewFile({
         id: file.id,
         filename: file.filename,

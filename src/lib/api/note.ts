@@ -1,3 +1,5 @@
+// import api from './axios';
+
 export interface NoteAPIResponse {
   id: number;
   title: string;
@@ -7,6 +9,12 @@ export interface NoteAPIResponse {
   size: number;
   created_at: string;
 }
+
+// export async function getNotes() {
+//   return api.get('/notes/');
+// }
+
+//`http://localhost:8000/notes`
 
 export async function fetchNotes(): Promise<NoteAPIResponse[]>{
   const response = await fetch(`http://localhost:8000/notes/`);

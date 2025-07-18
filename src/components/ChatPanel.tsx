@@ -1,16 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box , TextField , Typography , IconButton , CircularProgress , Button , Snackbar , Alert as MuiAlert , AlertColor } from "@mui/material";
+import { Box , TextField , Typography , IconButton , CircularProgress , Button } from "@mui/material";
 import Image from "next/image";
+import { useResourceContext } from "@/lib/contexts/ResourceContext";
 import { useNoteContext } from "@/lib/contexts/NoteContext";
 import { useChatContext } from "@/lib/contexts/ChatContext";
 import ArticleDialog from "./custom/ArticleDialog";
-import { createArticleAdmin } from "@/lib/api/article";
-
-const Alert = React.forwardRef(function Alert(props: any, ref: any) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 export default function ChatPanel() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -27,6 +23,13 @@ export default function ChatPanel() {
   } = useChatContext();
 
   const {
+    handleNoteToTextResource
+  } = useResourceContext();
+
+  const {
+    setNoteTitleBuffer,
+    setNoteContentBuffer,
+    handleAddNote,
     handleAddNoteDirect
   } = useNoteContext();
 
@@ -60,41 +63,21 @@ export default function ChatPanel() {
 
   const handleCloseDialog = () => setOpenDialog(false);
 
-  // Snackbar
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success");
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  const handleConfirm = async () => {
-    try{
-      const tagLists = selectedArticle.tags.split(",").map(t => t.trim());
-
-      const result = await createArticleAdmin(selectedArticle.title, tagLists, selectedArticle.expectedDuration, selectedArticle.content);
-  
-      console.log("Article created successfully");
-      setOpenDialog(false);
-
-      setSnackbarMessage("Article created successfully!!");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-    }catch(error){
-      console.error("Failed to create article");
-
-      setSnackbarMessage("Failed to create article!!");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    }
-
+  const handleConfirm = () => {
+    console.log("Confirmed using article", selectedArticle);
+    setOpenDialog(false);
   };
 
   return (
     <Box
       display="flex"
+      // width="50%"
       flexDirection="column"
+      // m={2}
+      // border={1}
+      // borderRadius={2}
+      //minHeight={'100%'}
+      //height={'100%'}
       flexGrow={1}
     >
       <Box
@@ -316,6 +299,10 @@ export default function ChatPanel() {
             width: 48,
             height: 48,
             p: 0.5,
+            // backgroundColor: '#2d3748',
+            // '&:hover':{
+            //     backgroundColor:'rgb(115, 122, 137)'
+            // }
           }}
           >
             {isLoading ? ( //แสดง CircularProgress แทนรูปไอคอนเมื่อกำลังโหลด
@@ -331,17 +318,6 @@ export default function ChatPanel() {
           </IconButton>
         </Box>
       </Box>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: "100%" }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }
