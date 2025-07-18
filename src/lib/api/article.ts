@@ -1,12 +1,14 @@
 import axios from 'axios';
 
+const KSP_API_URL = process.env.NEXT_PUBLIC_KSP_SIT_API_URL;
+
 export async function createArticleAdmin(name: string, tagNames: string[], expectedDuration: number, content: string) {
-    const response = await axios.post('https://ksp-sit-api.larngeartech.com/article-admin/articles', {
+    const response = await axios.post(`${KSP_API_URL}/article-admin/articles`, {
         code: 'AIP20250001',
         name: name,
         categoryId: 1,
         academyId: 1,
-        imageUrl: 'https://ksp-sit-api.larngeartech.com/images/academy.png',
+        imageUrl: `${KSP_API_URL}/images/academy.png`,
         aboutAuthor: 'Auto generated from LarnGearLM',
         authorUserId: 1,
         tagNames: tagNames,
@@ -31,7 +33,7 @@ export async function createArticleAdmin(name: string, tagNames: string[], expec
 }
 
 export async function updateArticleAdminContent(articleId: number, expectedDuration: number, content: string) {
-    const response = await axios.put(`https://ksp-sit-api.larngeartech.com/article-admin/articles/${articleId}/content`, {
+    const response = await axios.put(`${KSP_API_URL}/article-admin/articles/${articleId}/content`, {
         expectedDuration: expectedDuration,
         contentHtml: content,
         contentJson: {
@@ -58,7 +60,7 @@ export async function updateArticleAdminContent(articleId: number, expectedDurat
 }
 
 export async function updateArticleAdminSetting(articlesId: number) {
-    const response = await axios.put(`https://ksp-sit-api.larngeartech.com/article-admin/articles/${articlesId}/setting`, {
+    const response = await axios.put(`${KSP_API_URL}/article-admin/articles/${articlesId}/setting`, {
         status: "published",
         startPublishAt: null,
         endPublishAt: null,
