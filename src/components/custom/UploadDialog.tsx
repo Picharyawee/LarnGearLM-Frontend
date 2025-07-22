@@ -4,7 +4,7 @@ import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close"
 import SearchIcon from '@mui/icons-material/Search';
 import { useResourceContext } from "@/lib/contexts/ResourceContext";
-import { queryResources } from "@/lib/api/lms";
+import { queryResources, useLmsResource } from "@/lib/api/lms";
 
 export default function UploadDialog({open}: {open: boolean}) {
   const { 
@@ -12,21 +12,23 @@ export default function UploadDialog({open}: {open: boolean}) {
     handleFileUpload,
     handleCreateYoutubeTranscript,
     handleCreateWebsiteText,
-    handleTextUpload
+    handleTextUpload,
+    fetchResources
   } = useResourceContext();
 
-  type ResourceResult = {
-    metadata?: {
-      source?: string;
-    };
-  };
+  interface DocumentProps {
+    id: string;
+    name: string;
+    bundleName?: string;
+    refKey?: string;
+  }
 
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
   const [view, setView] = useState<"default" | "lms">("default");
   const [searchQuery, setSearchQuery] = useState("");
-  const [resultQuery, setResultQuery] = useState<string[]>([]);
+  const [resultQuery, setResultQuery] = useState<DocumentProps[]>([]);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -34,19 +36,53 @@ export default function UploadDialog({open}: {open: boolean}) {
     try {
       const results = await queryResources(searchQuery);
       console.log(results);
-      const stringResults = results.map((item: any) => item.metadata.name);
-      console.log(stringResults);
-      setResultQuery(stringResults);
+      const documentResults: DocumentProps[] = results.map((item: any) => ({
+        id: item.metadata.id || '',
+        name: item.metadata.name || '',
+        bundleName: item.metadata.bundleName || '',
+        refKey: item.metadata.refKey || ''
+      }));
+      setResultQuery(documentResults);
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการค้นหา:", error);
       setResultQuery([]);
     }
   };
 
+  const handleUseFile = async (doc: DocumentProps) => {
+    try{
+      let response;
+      console.log(doc);
+      if(doc.id){
+        response = await useLmsResource(0, doc.name, doc.id, undefined, undefined);
+      }
+      else if(doc.bundleName && doc.refKey){
+        response = await useLmsResource(1, doc.name, undefined, doc.bundleName, doc.refKey);
+      }
+      else{
+        console.log("ข้อมูลไม่ครบถ้วนในการใช้ไฟล์ LMS:", doc);
+
+        return;
+      }
+      
+      if(response.status == 200){
+        setOpenModal(false);
+        await fetchResources();
+      }
+      else{
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    }catch(error){
+      console.error("ไม่สามารถใช้ไฟล์ LMS ได้:", error);
+    }
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={() => setOpenModal(false)}
+      onClose={() => {
+        setOpenModal(false);
+      }}
       fullWidth
       maxWidth="md"
     >
@@ -77,7 +113,12 @@ export default function UploadDialog({open}: {open: boolean}) {
             {view === "default" ? "ค้นหาจากระบบ LMS" : "ค้นหาจากบนเครื่อง"}
           </Button>
           <IconButton
-            onClick={() => setOpenModal(false)}
+            onClick={() => {
+              setOpenModal(false);
+              setView("default");
+              setSearchQuery("");
+              setResultQuery([]);
+            }}
           >
             <CloseIcon />
           </IconButton>
@@ -227,7 +268,7 @@ export default function UploadDialog({open}: {open: boolean}) {
               onKeyDown={(e) => {
                 if(e.key === 'Enter'){
                   handleSearch();
-                  setSearchQuery('');
+                  //setSearchQuery('');
                 }
               }}
               />
@@ -260,7 +301,7 @@ export default function UploadDialog({open}: {open: boolean}) {
               {resultQuery.length > 0 ? (
                 resultQuery.map((result, idx) => (
                   <Box
-                  key={idx}
+                  key={result.id}
                   sx={{
                     width: '100%',
                     px: 2,
@@ -272,7 +313,7 @@ export default function UploadDialog({open}: {open: boolean}) {
                     alignItems: 'center'
                   }}
                   >
-                    <Typography>{result}</Typography>
+                    <Typography>{result.name}</Typography>
 
                     <Button
                     variant="contained"
@@ -283,6 +324,12 @@ export default function UploadDialog({open}: {open: boolean}) {
                       borderRadius: '8px',
                       px: 2,
                       mx: 1
+                    }}
+                    onClick={() => {
+                      handleUseFile(result);
+                      setView("default");
+                      setSearchQuery("");
+                      setResultQuery([]);
                     }}
                     >
                       ใช้ไฟล์นี้
@@ -299,7 +346,7 @@ export default function UploadDialog({open}: {open: boolean}) {
                 alignItems="center"
                 //border={1}
                 >
-                  {searchQuery ? "ไม่พบผลลัพธ์ที่เกี่ยวข้อง" : "พิมพ์คำเพื่อค้นหา"}
+                  {searchQuery ? "" : "พิมพ์คำเพื่อค้นหา"}
                 </Typography>
               )}
             </Box>

@@ -39,6 +39,8 @@ interface ResourceContextProps {
   handleCreateYoutubeTranscript: (url: string) => Promise<void>;
   handleCreateWebsiteText: (url: string) => Promise<void>;
   handleTextUpload: (content: string) => Promise<void>;
+
+  fetchResources: () => Promise<void>;
 }
 
 const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
@@ -245,7 +247,8 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setPreviewFile,
       handleCreateYoutubeTranscript,
       handleCreateWebsiteText,
-      handleTextUpload
+      handleTextUpload,
+      fetchResources
     }}>
       {children}
     </ResourceContext.Provider>
