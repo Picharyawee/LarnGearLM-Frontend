@@ -177,7 +177,7 @@ export default function ChatPanel() {
           </Box>
         ) : (
           messages.map((msg) => (
-            <>
+            <React.Fragment key={msg.id}>
               <Box
               key={msg.id}
               sx={{
@@ -252,7 +252,7 @@ export default function ChatPanel() {
                   </Button>
                 }
               </Box>
-            </>
+            </React.Fragment>
           ))
         )}
 

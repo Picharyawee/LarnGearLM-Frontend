@@ -20,8 +20,10 @@ export default function ArticleDialog({ open, article, onClose, onConfirm }: Art
         fullWidth 
         maxWidth="md"
         >
-            <DialogTitle>
-                {article.title}
+            <DialogTitle component="div">
+                <Typography variant="h6">
+                    {article.title}
+                </Typography>
             </DialogTitle>
 
             <DialogContent dividers>

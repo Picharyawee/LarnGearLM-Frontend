@@ -93,7 +93,7 @@ export default function UploadDialog({open}: {open: boolean}) {
         borderBottom={1}
         mb={2}
       >
-        <Typography variant="h6">
+        <Typography variant="subtitle1" component="div">
           เพิ่มแหล่งข้อมูล
         </Typography>
 
@@ -301,7 +301,7 @@ export default function UploadDialog({open}: {open: boolean}) {
               {resultQuery.length > 0 ? (
                 resultQuery.map((result, idx) => (
                   <Box
-                  key={result.id}
+                  key={result.id || idx}
                   sx={{
                     width: '100%',
                     px: 2,
