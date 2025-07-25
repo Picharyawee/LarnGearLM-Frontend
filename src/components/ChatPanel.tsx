@@ -78,13 +78,13 @@ export default function ChatPanel() {
       console.log("Article created successfully");
       setOpenDialog(false);
 
-      setSnackbarMessage("Article created successfully!!");
+      setSnackbarMessage("สร้างบทความสำเร็จ");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
     }catch(error){
       console.error("Failed to create article");
 
-      setSnackbarMessage("Failed to create article!!");
+      setSnackbarMessage("ไม่สามารถสร้างบทความได้");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }

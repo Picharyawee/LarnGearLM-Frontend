@@ -39,6 +39,8 @@ interface ResourceContextProps {
   handleCreateYoutubeTranscript: (url: string) => Promise<void>;
   handleCreateWebsiteText: (url: string) => Promise<void>;
   handleTextUpload: (content: string) => Promise<void>;
+
+  fetchResources: () => Promise<void>;
 }
 
 const ResourceContext = createContext<ResourceContextProps | undefined>(undefined);
@@ -97,8 +99,10 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   async function fetchAccessToken() {
-    const response = await login('support@larngeartech.com', 'Larngear@123456');
     // const response = await login('support@local.com', '1234');
+    const username = process.env.NEXT_PUBLIC_USERNAME!;
+    const password = process.env.NEXT_PUBLIC_PASSWORD!;
+    const response = await login(username, password);
     const token = response.data.accessToken;
     localStorage.setItem('accessToken', token);
   }
@@ -243,7 +247,8 @@ export const ResourceProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setPreviewFile,
       handleCreateYoutubeTranscript,
       handleCreateWebsiteText,
-      handleTextUpload
+      handleTextUpload,
+      fetchResources
     }}>
       {children}
     </ResourceContext.Provider>
